@@ -1,0 +1,31 @@
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Estado</title>
+</head>
+<body>
+
+<form action="/salvarEndereco" th:object="${endereco}" method="POST">
+    <input type="hidden" th:field="*{id}"/>
+
+    <label for="rua">Rua:</label>
+    <input type="text" th:field="*{rua}" required><br>
+
+    <label for="numero">Número:</label>
+    <input type="text" th:field="*{numero}" required><br>
+
+    <label for="bairro">Bairro:</label>
+    <input type="text" th:field="*{bairro}" required><br>
+
+
+
+    <button type="submit">Salvar</button>
+</form>
+
+
+
+</body>
+</html>
