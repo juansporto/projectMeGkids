@@ -1,21 +1,23 @@
 package com.projeto.sistemameg2.modelos;
 
 import jakarta.persistence.*;
-
 import java.io.Serializable;
 
 @Entity
 @Table(name = "endereco")
 public class Endereco implements Serializable {
-
-    private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String rua;
     private String numero;
     private String bairro;
-    private long clienteId;
+
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     public Long getId() {
         return id;
@@ -49,11 +51,14 @@ public class Endereco implements Serializable {
         this.bairro = bairro;
     }
 
-    public long getClienteId() {
-        return clienteId;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setClienteId(long clienteId) {
-        this.clienteId = clienteId;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
+
+    // Getters e Setters
+
