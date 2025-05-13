@@ -63,6 +63,5 @@ public class ItemPedido implements Serializable {
     public void setProduto(Produto produto) {
         this.produto = produto;
     }
-
-    // Getters e Setters
+// Getters e Setters
 }

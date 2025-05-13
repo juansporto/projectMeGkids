@@ -1,16 +1,12 @@
 package com.projeto.sistemameg2.controle;
 
-
-
-
-
-import com.projeto.sistemameg2.modelos.Usuario;
-import org.springframework.ui.Model;
 import com.projeto.sistemameg2.modelos.Endereco;
+import com.projeto.sistemameg2.modelos.Usuario;
 import com.projeto.sistemameg2.repositorios.EnderecoRepositorio;
-
+import com.projeto.sistemameg2.repositorios.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -33,12 +29,6 @@ public class EnderecoControle {
 
     @PostMapping("/salvarEndereco")
     public String salvarEndereco(@ModelAttribute Endereco endereco) {
-        // Atribuir um usuário ao endereço (supondo que o usuário está logado)
-        // Aqui você pode pegar o usuário logado, por exemplo, via sessão ou autenticado.
-
-        Usuario usuarioLogado = new Usuario(); // Substitua isso pela lógica real para obter o usuário logado
-        endereco.setUsuario(usuarioLogado);
-
         enderecoRepositorio.save(endereco);
         return "redirect:/listarEndereco";
     }
@@ -56,3 +46,5 @@ public class EnderecoControle {
         return "redirect:/listarEndereco";
     }
 }
+
+

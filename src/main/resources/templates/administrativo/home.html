@@ -59,9 +59,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/listarUsuario">Listar Usuários</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout">Logout</a>
-                </li>
             </ul>
         </div>
     </div>
@@ -70,11 +67,6 @@
 <div class="container mt-5">
     <h1>Bem-vindo ao Sistema Administrativo</h1>
     <p class="lead">Aqui você pode gerenciar os endereços, produtos, pedidos e usuários da sua loja Meg Kids.</p>
-
-    <div class="mt-4">
-        <h3>Olá, <strong th:text="${usuario.nome}">[Nome do Usuário]</strong>!</h3>
-        <p>Você está logado como <strong th:text="${usuario.tipoPerfil}">[Tipo de Perfil]</strong>.</p>
-    </div>
 </div>
 
 <!-- Incluindo o script do Bootstrap -->

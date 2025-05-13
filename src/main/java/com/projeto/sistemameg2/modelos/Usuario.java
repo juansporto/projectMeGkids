@@ -1,46 +1,32 @@
 package com.projeto.sistemameg2.modelos;
 
-
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-
-
 import jakarta.persistence.*;
-
-
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario {
-
+public class Usuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    private String nome;
     private String email;
-
-    @Column(nullable = false)
     private String senha;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TipoPerfil tipoPerfil;  // Aqui definimos o tipo de perfil: ADMIN ou CLIENTE
+    @Column(name = "is_admin")
+    private boolean isAdmin;
 
-    @Column(nullable = false)
-    private String nome;
+    @Column(name = "data_criacao")
+    private LocalDateTime dataCriacao;
 
-    // Defina os outros campos que você precisar, como endereço, etc.
-    private String endereco;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Endereco> enderecos;
 
-    public enum TipoPerfil {
-        ADMIN, CLIENTE;
-    }
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pedido> pedidos;
 
     public Long getId() {
         return id;
@@ -48,6 +34,14 @@ public class Usuario {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getEmail() {
@@ -66,30 +60,37 @@ public class Usuario {
         this.senha = senha;
     }
 
-    public TipoPerfil getTipoPerfil() {
-        return tipoPerfil;
+    public boolean isAdmin() {
+        return isAdmin;
     }
 
-    public void setTipoPerfil(TipoPerfil tipoPerfil) {
-        this.tipoPerfil = tipoPerfil;
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
-    public String getNome() {
-        return nome;
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
     }
 
-    public String getEndereco() {
-        return endereco;
+    public List<Endereco> getEnderecos() {
+        return enderecos;
     }
 
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
+    public void setEnderecos(List<Endereco> enderecos) {
+        this.enderecos = enderecos;
     }
 
-    // Construtores, getters e setters (serão gerados pelo Lombok se o @Data for utilizado)
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
+
+    // Getters e Setters
 }
-
