@@ -3,27 +3,25 @@ package com.projeto.sistemameg2.modelos;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Table(name = "produto")
 public class Produto implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nome;
+
+    @Column(length = 500) // define tamanho maximo, opcional
     private String descricao;
+
     private BigDecimal preco;
 
-    @Column(name = "imagem_url")
-    private String imagemUrl;
+    private int estoque;
 
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EstoqueMov> movimentos;
-
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemPedido> itensPedido;
+    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -57,29 +55,11 @@ public class Produto implements Serializable {
         this.preco = preco;
     }
 
-    public String getImagemUrl() {
-        return imagemUrl;
+    public int getEstoque() {
+        return estoque;
     }
 
-    public void setImagemUrl(String imagemUrl) {
-        this.imagemUrl = imagemUrl;
+    public void setEstoque(int estoque) {
+        this.estoque = estoque;
     }
-
-    public List<EstoqueMov> getMovimentos() {
-        return movimentos;
-    }
-
-    public void setMovimentos(List<EstoqueMov> movimentos) {
-        this.movimentos = movimentos;
-    }
-
-    public List<ItemPedido> getItensPedido() {
-        return itensPedido;
-    }
-
-    public void setItensPedido(List<ItemPedido> itensPedido) {
-        this.itensPedido = itensPedido;
-    }
-
-    // Getters e Setters
 }

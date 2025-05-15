@@ -16,6 +16,9 @@ public class Usuario implements Serializable {
     private String email;
     private String senha;
 
+    @Column(name = "tipo_usuario")
+    private String tipoUsuario;
+
     @Column(name = "is_admin")
     private boolean isAdmin;
 
@@ -27,6 +30,8 @@ public class Usuario implements Serializable {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pedido> pedidos;
+
+    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -60,6 +65,14 @@ public class Usuario implements Serializable {
         this.senha = senha;
     }
 
+    public String getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(String tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
+    }
+
     public boolean isAdmin() {
         return isAdmin;
     }
@@ -91,6 +104,4 @@ public class Usuario implements Serializable {
     public void setPedidos(List<Pedido> pedidos) {
         this.pedidos = pedidos;
     }
-
-    // Getters e Setters
 }

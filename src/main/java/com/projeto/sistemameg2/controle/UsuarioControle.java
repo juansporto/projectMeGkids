@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-
+import java.time.LocalDateTime;
 
 
 @Controller
@@ -30,9 +30,20 @@ public class UsuarioControle {
 
     @PostMapping("/salvarUsuario")
     public String salvarUsuario(@ModelAttribute Usuario usuario) {
+        if (usuario.getDataCriacao() == null) {
+            usuario.setDataCriacao(LocalDateTime.now());
+        }
+
+        // Se quiser garantir que sempre tenha um tipo definido
+        if (usuario.getTipoUsuario() == null || usuario.getTipoUsuario().isEmpty()) {
+            usuario.setTipoUsuario("funcionario");
+        }
+
         usuarioRepositorio.save(usuario);
         return "redirect:/listarUsuario";
     }
+
+
 
     @GetMapping("/editarUsuario/{id}")
     public String editarUsuario(@PathVariable("id") Long id, Model model) {

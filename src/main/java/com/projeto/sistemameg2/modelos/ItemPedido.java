@@ -7,14 +7,10 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "item_pedido")
 public class ItemPedido implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private int quantidade;
-
-    @Column(name = "preco_unitario")
-    private BigDecimal precoUnitario;
 
     @ManyToOne
     @JoinColumn(name = "pedido_id")
@@ -24,28 +20,17 @@ public class ItemPedido implements Serializable {
     @JoinColumn(name = "produto_id")
     private Produto produto;
 
+    private int quantidade;
+
+    private BigDecimal preco;
+
+    // Getters e Setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public int getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public BigDecimal getPrecoUnitario() {
-        return precoUnitario;
-    }
-
-    public void setPrecoUnitario(BigDecimal precoUnitario) {
-        this.precoUnitario = precoUnitario;
     }
 
     public Pedido getPedido() {
@@ -63,5 +48,20 @@ public class ItemPedido implements Serializable {
     public void setProduto(Produto produto) {
         this.produto = produto;
     }
-// Getters e Setters
+
+    public int getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
+    }
 }

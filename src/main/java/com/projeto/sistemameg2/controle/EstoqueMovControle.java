@@ -9,6 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @Controller
 public class EstoqueMovControle {
 
@@ -18,36 +21,41 @@ public class EstoqueMovControle {
     @Autowired
     private ProdutoRepositorio produtoRepositorio;
 
-    @GetMapping("/cadastroEstoqueMov")
-    public String cadastroEstoqueMov(Model model) {
+    @GetMapping("/listarMovimentacoes")
+    public String listarMovimentacoes(Model model) {
+        List<EstoqueMov> lista = estoqueMovRepositorio.findAll();
+        model.addAttribute("movimentacoes", lista);
+        return "administrativo/estoque/movimentacoes-lista"; // crie essa view
+    }
+
+    @GetMapping("/cadastroMovimentacao")
+    public String cadastroMovimentacao(Model model) {
         model.addAttribute("estoqueMov", new EstoqueMov());
         model.addAttribute("produtos", produtoRepositorio.findAll());
-        return "administrativo/estoques/cadastro";
+        return "administrativo/estoque/movimentacoes-cadastro"; // crie essa view
     }
 
-    @GetMapping("/listarEstoqueMov")
-    public String listarEstoqueMov(Model model) {
-        model.addAttribute("estoques", estoqueMovRepositorio.findAll());
-        return "administrativo/estoques/lista";
-    }
-
-    @PostMapping("/salvarEstoqueMov")
-    public String salvarEstoqueMov(@ModelAttribute EstoqueMov estoqueMov) {
+    @PostMapping("/salvarMovimentacao")
+    public String salvarMovimentacao(@ModelAttribute EstoqueMov estoqueMov) {
         estoqueMovRepositorio.save(estoqueMov);
-        return "redirect:/listarEstoqueMov";
+        return "redirect:/listarMovimentacoes";
     }
 
-    @GetMapping("/editarEstoqueMov/{id}")
-    public String editarEstoqueMov(@PathVariable("id") Long id, Model model) {
-        EstoqueMov estoqueMov = estoqueMovRepositorio.findById(id).orElse(null);
-        model.addAttribute("estoqueMov", estoqueMov);
-        model.addAttribute("produtos", produtoRepositorio.findAll());
-        return "administrativo/estoques/cadastro";
+    @GetMapping("/editarMovimentacao/{id}")
+    public String editarMovimentacao(@PathVariable("id") Long id, Model model) {
+        Optional<EstoqueMov> mov = estoqueMovRepositorio.findById(id);
+        if (mov.isPresent()) {
+            model.addAttribute("estoqueMov", mov.get());
+            model.addAttribute("produtos", produtoRepositorio.findAll());
+            return "administrativo/estoque/movimentacoes-cadastro"; // mesma view do cadastro
+        } else {
+            return "redirect:/listarMovimentacoes";
+        }
     }
 
-    @GetMapping("/removerEstoqueMov/{id}")
-    public String removerEstoqueMov(@PathVariable("id") Long id) {
+    @GetMapping("/removerMovimentacao/{id}")
+    public String removerMovimentacao(@PathVariable("id") Long id) {
         estoqueMovRepositorio.deleteById(id);
-        return "redirect:/listarEstoqueMov";
+        return "redirect:/listarMovimentacoes";
     }
 }

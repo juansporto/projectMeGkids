@@ -70,6 +70,4 @@ public class EstoqueMov implements Serializable {
     public void setData(LocalDateTime data) {
         this.data = data;
     }
-
-    // Getters e Setters
 }
