@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Editar Pedido - Meg Kids</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .btn-custom {
+            background-color: #f06292;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #ec407a;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar padrão Meg Kids -->
+<nav class="navbar navbar-expand-lg" style="background-color: #f06292;">
+    <a class="navbar-brand text-white ms-3" href="#">Meg Kids</a>
+</nav>
+
+<div class="container mt-4">
+    <h2 class="mb-4"><i class="fas fa-edit"></i> Editar Pedido</h2>
+
+    <form th:action="@{/administrativo/pedidos/editar}" method="post">
+        <input type="hidden" name="id" th:value="${pedido.id}" />
+
+        <div class="form-group">
+            <label for="usuarioId">Cliente</label>
+            <select class="form-control" id="usuarioId" name="usuarioId" required>
+                <option value="" disabled>Selecione um cliente</option>
+                <option th:each="usuario : ${usuarios}"
+                        th:value="${usuario.id}"
+                        th:text="${usuario.nome}"
+                        th:selected="${usuario.id == pedido.usuario.id}">
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group mt-3">
+            <label>Status</label>
+            <select class="form-control" name="status" required>
+                <option value="Pendente" th:selected="${pedido.status == 'Pendente'}">Pendente</option>
+                <option value="Finalizado" th:selected="${pedido.status == 'Finalizado'}">Finalizado</option>
+                <option value="Cancelado" th:selected="${pedido.status == 'Cancelado'}">Cancelado</option>
+            </select>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-custom">
+                <i class="fas fa-save"></i> Salvar
+            </button>
+            <a th:href="@{/listarPedido}" class="btn btn-secondary ms-2">Cancelar</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

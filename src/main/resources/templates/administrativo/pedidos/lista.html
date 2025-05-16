@@ -1,64 +1,84 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Lista de Pedidos - Meg Kids</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-y6nRsoRMfUOUYdFFcC6e+6ktnnQnF3Ek1GZ6G7MJ1PsnDkVGRGZ3CEZQVoWxXFtV6t0J+AWwEi2HnGrxMHik2w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        body { background-color: #f8f9fa; }
-        .header { background-color: #f06292; color: white; padding: 10px 0; }
-        .btn-custom { background-color: #f06292; color: white; }
-        .btn-custom:hover { background-color: #e91e63; }
+        .btn-custom {
+            background-color: #f06292;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #ec407a;
+            color: white;
+        }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header text-center mb-4">
-        <h1>Lista de Pedidos - Meg Kids</h1>
-    </div>
 
-    <div class="d-flex justify-content-between mb-3">
+<!-- Navbar padrão Meg Kids -->
+<nav class="navbar navbar-expand-lg" style="background-color: #f06292;">
+    <a class="navbar-brand text-white" href="#">Meg Kids</a>
+</nav>
+
+<div class="container mt-4">
+
+    <!-- Botões de Ação -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
         <a href="/" class="btn btn-outline-secondary">
-            <i class="fa-solid fa-house"></i> Início
+            <i class="fas fa-house"></i> Início
         </a>
-        <a href="/cadastrarPedido" class="btn btn-custom">
-            <i class="fa-solid fa-plus"></i> Novo Pedido
+        <a th:href="@{/cadastroPedido}" class="btn btn-custom">
+            <i class="fas fa-plus"></i> Novo Pedido
         </a>
     </div>
 
-    <table class="table table-bordered table-striped">
-        <thead>
+    <h2 class="mb-4"><i class="fas fa-list"></i> Lista de Pedidos</h2>
+
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
         <tr>
             <th>ID</th>
-            <th>Data</th>
             <th>Cliente</th>
-            <th>Status</th>
+            <th>Data</th>
             <th>Total</th>
+            <th>Status</th>
             <th>Ações</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="pedido : ${pedidos}">
-            <td th:text="${pedido.id}"></td>
-            <td th:text="${#dates.format(pedido.data, 'dd/MM/yyyy HH:mm')}"></td>
-            <td th:text="${pedido.usuario.nome}"></td>
-            <td th:text="${pedido.status}"></td>
-            <td th:text="${pedido.total}"></td>
+            <td th:text="${pedido.id}">1</td>
+            <td th:text="${pedido.usuario != null ? pedido.usuario.nome : '---'}">Nome</td>
+            <td th:text="${#temporals.format(pedido.data, 'dd/MM/yyyy')}">01/01/2025</td>
+            <td th:text="${pedido.total}">0.00</td>
             <td>
-                <a th:href="@{'/editarPedido/' + ${pedido.id}}" class="btn btn-warning btn-sm">
-                    <i class="fa-solid fa-pen-to-square"></i> Editar
+                <span th:text="${pedido.status}"
+                      th:classappend="${pedido.status == 'Finalizado'} ? 'text-success font-weight-bold' : 'text-warning'">
+                    Pendente
+                </span>
+            </td>
+            <td>
+                <a th:href="@{'/administrativo/pedidos/editar/' + ${pedido.id}}" class="btn btn-sm btn-warning">
+                    <i class="fas fa-edit"></i>
                 </a>
-                <a th:href="@{'/removerPedido/' + ${pedido.id}}" class="btn btn-danger btn-sm" onclick="return confirm('Deseja remover este pedido?');">
-                    <i class="fa-solid fa-trash"></i> Remover
+                <a th:href="@{'/administrativo/pedidos/deletar/' + ${pedido.id}}" class="btn btn-sm btn-danger"
+                   onclick="return confirm('Tem certeza que deseja deletar este pedido?');">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+                <a th:if="${pedido.status == 'Pendente'}"
+                   th:href="@{'/administrativo/pedidos/finalizar/' + ${pedido.id}}"
+                   class="btn btn-sm btn-success"
+                   onclick="return confirm('Deseja finalizar este pedido?');">
+                    <i class="fas fa-check"></i> Finalizar
                 </a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
+
 </body>
 </html>

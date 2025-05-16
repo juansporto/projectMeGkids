@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listar Endereços - Meg Kids</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8" />
+    <title>Lista de Endereços - Meg Kids</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         .btn-custom {
             background-color: #f06292;
@@ -21,19 +18,28 @@
 </head>
 <body>
 
+<!-- Navbar padrão -->
 <nav class="navbar navbar-expand-lg" style="background-color: #f06292;">
     <a class="navbar-brand text-white" href="#">Meg Kids</a>
 </nav>
 
 <div class="container mt-4">
-    <a href="/" class="btn btn-outline-secondary mb-3">
-        <i class="fa-solid fa-house"></i> Voltar para Início
-    </a>
 
-    <h2 class="mb-4">Endereços Cadastrados</h2>
+    <!-- Botões e título -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="/" class="btn btn-outline-secondary">
+            <i class="fas fa-house"></i> Início
+        </a>
+        <a href="/cadastroEndereco" class="btn btn-custom">
+            <i class="fas fa-map-marker-alt"></i> Novo Endereço
+        </a>
+    </div>
+
+    <h2 class="mb-4"><i class="fas fa-map-marked-alt"></i> Endereços Cadastrados</h2>
+
     <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-            <thead class="thead-light">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
             <tr>
                 <th>ID</th>
                 <th>Rua</th>
@@ -46,30 +52,27 @@
             </thead>
             <tbody>
             <tr th:each="endereco : ${enderecos}">
-                <td th:text="${endereco.id}"></td>
-                <td th:text="${endereco.rua}"></td>
-                <td th:text="${endereco.numero}"></td>
-                <td th:text="${endereco.bairro}"></td>
-                <td th:text="${endereco.cidade}"></td>
-                <td th:text="${endereco.estado}"></td>
+                <td th:text="${endereco.id}">1</td>
+                <td th:text="${endereco.rua}">Rua Exemplo</td>
+                <td th:text="${endereco.numero}">123</td>
+                <td th:text="${endereco.bairro}">Centro</td>
+                <td th:text="${endereco.cidade}">Cidade</td>
+                <td th:text="${endereco.estado}">Estado</td>
                 <td>
                     <a th:href="@{/editarEndereco/{id}(id=${endereco.id})}" class="btn btn-sm btn-warning">
-                        <i class="fa-solid fa-pen-to-square"></i> Editar
+                        <i class="fas fa-edit"></i>
                     </a>
-                    <a th:href="@{/removerEndereco/{id}(id=${endereco.id})}" class="btn btn-sm btn-danger">
-                        <i class="fa-solid fa-trash-can"></i> Excluir
+                    <a th:href="@{/removerEndereco/{id}(id=${endereco.id})}" class="btn btn-sm btn-danger"
+                       onclick="return confirm('Tem certeza que deseja excluir este endereço?');">
+                        <i class="fas fa-trash-alt"></i>
                     </a>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
-    <a href="/cadastroEndereco" class="btn btn-custom mt-3"><i class="fa-solid fa-plus"></i> Cadastrar Novo Endereço</a>
-</div>
 
-<!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</div>
 
 </body>
 </html>

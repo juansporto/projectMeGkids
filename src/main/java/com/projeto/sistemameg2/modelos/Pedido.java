@@ -1,3 +1,4 @@
+// src/main/java/com/projeto/sistemameg2/modelos/Pedido.java
 package com.projeto.sistemameg2.modelos;
 
 import jakarta.persistence.*;
@@ -9,6 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "pedido")
 public class Pedido implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -71,6 +73,6 @@ public class Pedido implements Serializable {
     public void setItens(List<ItemPedido> itens) {
         this.itens = itens;
     }
-
-    // Getters e Setters
+// Getters e Setters
+    // (mantidos conforme já implementado)
 }
