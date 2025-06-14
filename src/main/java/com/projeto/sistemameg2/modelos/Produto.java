@@ -1,25 +1,33 @@
 package com.projeto.sistemameg2.modelos;
 
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "produto")
-public class Produto implements Serializable {
+@Table(name = "produtos")
+public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Integer quantidadeEstoque;
+
     private String nome;
 
-    @Column(length = 500) // define tamanho maximo, opcional
+    @Column(columnDefinition = "TEXT")
     private String descricao;
 
     private BigDecimal preco;
 
-    private int estoque;
+    @Column(name = "codigo_barras")
+    private String codigoBarras;
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
+
+    private Boolean status;
 
     // Getters e Setters
 
@@ -29,6 +37,14 @@ public class Produto implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getQuantidadeEstoque() {
+        return quantidadeEstoque;
+    }
+
+    public void setQuantidadeEstoque(Integer quantidadeEstoque) {
+        this.quantidadeEstoque = quantidadeEstoque;
     }
 
     public String getNome() {
@@ -55,11 +71,27 @@ public class Produto implements Serializable {
         this.preco = preco;
     }
 
-    public int getEstoque() {
-        return estoque;
+    public String getCodigoBarras() {
+        return codigoBarras;
     }
 
-    public void setEstoque(int estoque) {
-        this.estoque = estoque;
+    public void setCodigoBarras(String codigoBarras) {
+        this.codigoBarras = codigoBarras;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 }

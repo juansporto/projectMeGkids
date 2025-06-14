@@ -1,31 +1,15 @@
-package com.projeto.sistemameg2.modelos;
+package com.projeto.sistemameg2.dto;
 
-
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "usuarios")
-public class Usuario {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UsuarioDTO {
     private Long id;
-
     private String nome;
     private String email;
-    private String senha;
-
-    @Enumerated(EnumType.STRING)
-    private TipoUsuario tipo;
-
+    private String tipo; // GERENTE ou FUNCIONARIO
     private Boolean ativo;
 
-    public enum TipoUsuario {
-        GERENTE,
-        VENDEDOR, FUNCIONARIO
-    }
+    public UsuarioDTO() {}
 
-
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -50,19 +34,11 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public TipoUsuario getTipo() {
+    public String getTipo() {
         return tipo;
     }
 
-    public void setTipo(TipoUsuario tipo) {
+    public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 
@@ -74,4 +50,3 @@ public class Usuario {
         this.ativo = ativo;
     }
 }
-

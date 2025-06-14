@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Painel do Gerente</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        body {
+            background-color: #f8d7da; /* rosa salmão claro */
+        }
+        .navbar {
+            background-color: #c2185b; /* rosa forte */
+        }
+        .nav-link, .navbar-brand {
+            color: white !important;
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,..."); /* opcional: personalizar cor do ícone */
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Painel do Gerente</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/usuarios}">Usuários</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/clientes}">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/produtos}">Produtos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/categorias}">Categorias</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/estoques}">Estoques</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/movimentacoes}">Movimentações</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/vendas}">Vendas</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/itens}">Itens de Venda</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container text-center mt-5">
+    <h1>Bem-vindo ao Painel do Gerente</h1>
+    <p class="lead">Selecione uma das opções no menu para gerenciar o sistema.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

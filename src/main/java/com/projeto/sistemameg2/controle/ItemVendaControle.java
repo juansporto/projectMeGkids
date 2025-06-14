@@ -1,8 +1,7 @@
 package com.projeto.sistemameg2.controle;
 
-
-import com.projeto.sistemameg2.modelos.Produto;
-import com.projeto.sistemameg2.servicos.ProdutoServico;
+import com.projeto.sistemameg2.modelos.ItemVenda;
+import com.projeto.sistemameg2.servicos.ItemVendaServico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,42 +9,42 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/produtos")
-public class ProdutoControle {
+@RequestMapping("/itensvenda")
+public class ItemVendaControle {
 
     @Autowired
-    private ProdutoServico produtoServico;
+    private ItemVendaServico itemVendaServico;
 
     @GetMapping
-    public List<Produto> listar() {
-        return produtoServico.listarTodos();
+    public List<ItemVenda> listar() {
+        return itemVendaServico.listarTodos();
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> buscarPorId(@PathVariable Long id) {
-        return produtoServico.buscarPorId(id)
+    public ResponseEntity<ItemVenda> buscarPorId(@PathVariable Long id) {
+        return itemVendaServico.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Produto salvar(@RequestBody Produto produto) {
-        return produtoServico.salvar(produto);
+    public ItemVenda salvar(@RequestBody ItemVenda itemVenda) {
+        return itemVendaServico.salvar(itemVenda);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @RequestBody Produto produto) {
-        return produtoServico.atualizar(id, produto)
+    public ResponseEntity<ItemVenda> atualizar(@PathVariable Long id, @RequestBody ItemVenda itemVenda) {
+        return itemVendaServico.atualizar(id, itemVenda)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        if (produtoServico.deletar(id)) {
+        if (itemVendaServico.deletar(id)) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
 }
+
