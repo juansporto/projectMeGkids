@@ -3,47 +3,48 @@ package com.projeto.sistemameg2.controle;
 import com.projeto.sistemameg2.modelos.Cliente;
 import com.projeto.sistemameg2.servicos.ClienteServico;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
-@RequestMapping("/clientes")
-public class ClienteControle {
+@Controller
+@RequestMapping("/admin/clientes")
+public class ClienteWebControle {
 
     @Autowired
     private ClienteServico clienteServico;
 
     @GetMapping
-    public List<Cliente> listar() {
-        return clienteServico.listarTodos();
+    public String listarClientes(Model model) {
+        model.addAttribute("clientes", clienteServico.listarTodos());
+        return "admin/clienteslista";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Cliente> buscarPorId(@PathVariable Long id) {
-        return clienteServico.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/novo")
+    public String novoCliente(Model model) {
+        model.addAttribute("cliente", new Cliente());
+        return "admin/clientesform";
     }
 
-    @PostMapping
-    public Cliente salvar(@RequestBody Cliente cliente) {
-        return clienteServico.salvar(cliente);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Cliente> atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
-        return clienteServico.atualizar(id, cliente)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        if (clienteServico.deletar(id)) {
-            return ResponseEntity.ok().build();
+    @GetMapping("/editar/{id}")
+    public String editarCliente(@PathVariable Long id, Model model) {
+        Cliente cliente = clienteServico.buscarPorId(id).orElse(null);
+        if (cliente == null) {
+            return "redirect:/admin/clientes";
         }
-        return ResponseEntity.notFound().build();
+        model.addAttribute("cliente", cliente);
+        return "admin/clientesform";
+    }
+
+    @PostMapping("/salvar")
+    public String salvarCliente(@ModelAttribute Cliente cliente) {
+        clienteServico.salvar(cliente);
+        return "redirect:/admin/clientes";
+    }
+
+    @GetMapping("/deletar/{id}")
+    public String deletarCliente(@PathVariable Long id) {
+        clienteServico.deletar(id);
+        return "redirect:/admin/clientes";
     }
 }
