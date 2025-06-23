@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Lista de Categorias</title>
+    <title th:text="${categoria.id != null} ? 'Editar Categoria' : 'Nova Categoria'">Categoria</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <style>
         body { background-color: #f8d7da; }
@@ -25,33 +25,19 @@
 </nav>
 
 <div class="container mt-4">
-    <h2 class="text-center mb-4">Lista de Categorias</h2>
+    <h2 class="text-center mb-4" th:text="${categoria.id != null} ? 'Editar Categoria' : 'Nova Categoria'"></h2>
 
-    <div class="mb-3 text-end">
-        <a class="btn btn-rosa" th:href="@{/admin/categorias/nova}">Nova Categoria</a>
-    </div>
+    <form th:action="@{/admin/categorias/salvar}" th:object="${categoria}" method="post" class="bg-white p-4 rounded shadow-sm">
+        <input type="hidden" th:field="*{id}"/>
 
-    <table class="table table-bordered bg-white">
-        <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="categoria : ${categorias}">
-            <td th:text="${categoria.id}"></td>
-            <td th:text="${categoria.nome}"></td>
-            <td>
-                <a class="btn btn-sm btn-primary" th:href="@{/admin/categorias/editar/{id}(id=${categoria.id})}">Editar</a>
-                <a class="btn btn-sm btn-danger"
-                   th:href="@{/admin/categorias/deletar/{id}(id=${categoria.id})}"
-                   onclick="return confirm('Tem certeza que deseja excluir esta categoria?');">Excluir</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+        <div class="mb-3">
+            <label class="form-label">Nome da Categoria</label>
+            <input type="text" th:field="*{nome}" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-rosa">Salvar</button>
+        <a th:href="@{/admin/categorias}" class="btn btn-secondary ms-2">Cancelar</a>
+    </form>
 </div>
 </body>
 </html>

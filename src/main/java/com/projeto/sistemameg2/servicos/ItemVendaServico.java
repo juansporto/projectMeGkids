@@ -22,6 +22,9 @@ public class ItemVendaServico {
         return itemVendaRepositorio.findById(id);
     }
 
+    // Este salvar e atualizar geralmente não seriam usados diretamente para o fluxo principal de venda,
+    // pois os itens são salvos via VendaService (cascata).
+    // Podem ser úteis para testes ou operações muito específicas.
     public ItemVenda salvar(ItemVenda itemVenda) {
         return itemVendaRepositorio.save(itemVenda);
     }
@@ -30,8 +33,9 @@ public class ItemVendaServico {
         return itemVendaRepositorio.findById(id).map(itemVenda -> {
             itemVenda.setProduto(novoItemVenda.getProduto());
             itemVenda.setQuantidade(novoItemVenda.getQuantidade());
-            itemVenda.setVenda(novoItemVenda.getVenda());
-            // Adicione mais campos conforme necessário
+            itemVenda.setVenda(novoItemVenda.getVenda()); // Cuidado ao mudar a venda de um item
+            itemVenda.setPrecoUnitario(novoItemVenda.getPrecoUnitario());
+            itemVenda.setSubTotal(novoItemVenda.getSubTotal()); // Adicionar subTotal
             return itemVendaRepositorio.save(itemVenda);
         });
     }

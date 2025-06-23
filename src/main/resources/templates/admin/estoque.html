@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Lista de Categorias</title>
+    <title>Gerenciar Estoque (Simplificado)</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <style>
         body {
@@ -29,42 +29,37 @@
         <a class="navbar-brand" th:href="@{/admin/dashboard}">Painel do Gerente</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/admin/categorias}">Categorias</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/clientes}">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/produtos}">Produtos (Completo)</a></li> <li class="nav-item"><a class="nav-link" th:href="@{/admin/estoque}">Estoque</a></li> <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
             </ul>
         </div>
     </div>
 </nav>
 
 <div class="container mt-4">
-    <h2 class="text-center mb-4">Categorias</h2>
+    <h2 class="text-center mb-4">Estoque Atual</h2>
 
     <div class="mb-3 text-end">
-        <a class="btn btn-rosa" th:href="@{/admin/categorias/nova}">Nova Categoria</a>
+        <a class="btn btn-rosa" th:href="@{/admin/produtos/novo}">Novo Produto</a>
     </div>
 
-    <table class="table table-bordered bg-white table-hover">
+    <table class="table table-striped table-bordered bg-white">
         <thead class="table-dark">
         <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Ações</th>
-        </tr>
+            <th>Nome do Produto</th>
+            <th>Quantidade em Estoque</th>
+            <th>Ações</th> </tr>
         </thead>
         <tbody>
-        <tr th:each="categoria : ${categorias}">
-            <td th:text="${categoria.id}"></td>
-            <td th:text="${categoria.nome}"></td>
+        <tr th:each="prodEstoque : ${produtosEstoque}">
+            <td th:text="${prodEstoque.nome}"></td>
+            <td th:text="${prodEstoque.quantidadeEstoque}"></td>
             <td>
-                <a class="btn btn-sm btn-primary" th:href="@{/admin/categorias/editar/{id}(id=${categoria.id})}">Editar</a>
-                <a class="btn btn-sm btn-danger"
-                   th:href="@{/admin/categorias/deletar/{id}(id=${categoria.id})}"
-                   onclick="return confirm('Deseja realmente excluir?');">Excluir</a>
+                <a class="btn btn-sm btn-primary" th:href="@{/admin/produtos/editar/{id}(id=${prodEstoque.id})}">Editar Quantidade</a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
-
 </body>
 </html>

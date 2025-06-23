@@ -13,18 +13,25 @@ public class ItemVenda {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "venda_id")
+    @JoinColumn(name = "venda_id", nullable = false) // Garanta que não pode ser nulo
     private Venda venda;
 
     @ManyToOne
-    @JoinColumn(name = "produto_id")
+    @JoinColumn(name = "produto_id", nullable = false) // Garanta que não pode ser nulo
     private Produto produto;
 
+    @Column(nullable = false)
     private Integer quantidade;
 
-    @Column(name = "preco_unitario")
+    @Column(name = "preco_unitario", nullable = false)
     private BigDecimal precoUnitario;
 
+    @Column(name = "sub_total", nullable = false) // <-- NOVO CAMPO
+    private BigDecimal subTotal;
+
+    public ItemVenda() {}
+
+    // Getters e Setters (adicionar para subTotal)
     public Long getId() {
         return id;
     }
@@ -63,5 +70,13 @@ public class ItemVenda {
 
     public void setPrecoUnitario(BigDecimal precoUnitario) {
         this.precoUnitario = precoUnitario;
+    }
+
+    public BigDecimal getSubTotal() { // <-- NOVO GETTER
+        return subTotal;
+    }
+
+    public void setSubTotal(BigDecimal subTotal) { // <-- NOVO SETTER
+        this.subTotal = subTotal;
     }
 }

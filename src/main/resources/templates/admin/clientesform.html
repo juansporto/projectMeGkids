@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastro de Cliente</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8d7da;
+        }
+        .navbar {
+            background-color: #c2185b;
+        }
+        .nav-link, .navbar-brand {
+            color: white !important;
+        }
+        .btn-rosa {
+            background-color: #c2185b;
+            color: white;
+        }
+        .btn-rosa:hover {
+            background-color: #a0174a;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/admin/dashboard}">Painel do Gerente</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/clientes}">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4" th:text="${cliente.id} == null ? 'Novo Cliente' : 'Editar Cliente'"></h2>
+
+    <form th:action="@{/admin/clientes/salvar}" th:object="${cliente}" method="post">
+        <div class="mb-3">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="nome" th:field="*{nome}" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" th:field="*{email}" required>
+        </div>
+        <div class="mb-3">
+            <label for="telefone" class="form-label">Telefone</label>
+            <input type="text" class="form-control" id="telefone" th:field="*{telefone}" required>
+        </div>
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-rosa">Salvar</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

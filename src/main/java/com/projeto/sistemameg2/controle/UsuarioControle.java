@@ -35,8 +35,9 @@ public class UsuarioControle {
         }
         model.addAttribute("usuario", usuario);
         model.addAttribute("tipos", Usuario.TipoUsuario.values());
-        return "admin/usuario-form";
+        return "admin/usuariosform"; // aqui está o nome correto do HTML
     }
+
 
     @PostMapping("/salvar")
     public String salvarUsuario(@ModelAttribute Usuario usuario) {

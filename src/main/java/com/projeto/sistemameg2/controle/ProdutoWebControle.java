@@ -1,51 +1,74 @@
 package com.projeto.sistemameg2.controle;
 
-
 import com.projeto.sistemameg2.modelos.Produto;
 import com.projeto.sistemameg2.servicos.ProdutoServico;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Optional;
 
-@RestController
-@RequestMapping("/produtos")
-public class ProdutoControle {
+@Controller
+@RequestMapping("/admin/produtos") // URL para acesso via navegador (admin para gerente)
+public class ProdutoWebControle {
 
     @Autowired
     private ProdutoServico produtoServico;
 
+    // Exibe a lista de produtos
     @GetMapping
-    public List<Produto> listar() {
-        return produtoServico.listarTodos();
+    public String listarProdutos(Model model) {
+        List<Produto> produtos = produtoServico.listarTodos();
+        model.addAttribute("produtos", produtos);
+        return "admin/produtoslista"; // Retorna o nome do template Thymeleaf (localizado em src/main/resources/templates/admin/lista-produtos.html)
     }
 
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Produto> buscarPorId(@PathVariable Long id) {
-        return produtoServico.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    // Exibe o formulário para um novo produto
+    @GetMapping("/novo")
+    public String exibirFormularioDeNovoProduto(Model model) {
+        model.addAttribute("produto", new Produto());
+        model.addAttribute("categorias", produtoServico.listarTodasCategorias()); // Para preencher o dropdown de categorias
+        return "admin/produtosform"; // Retorna o nome do template Thymeleaf
     }
 
-    @PostMapping
-    public Produto salvar(@RequestBody Produto produto) {
-        return produtoServico.salvar(produto);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @RequestBody Produto produto) {
-        return produtoServico.atualizar(id, produto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        if (produtoServico.deletar(id)) {
-            return ResponseEntity.ok().build();
+    // Exibe o formulário para editar um produto existente
+    @GetMapping("/editar/{id}")
+    public String exibirFormularioDeEdicaoDeProduto(@PathVariable Long id, Model model, RedirectAttributes attributes) {
+        Optional<Produto> produtoOptional = produtoServico.buscarPorId(id);
+        if (produtoOptional.isPresent()) {
+            model.addAttribute("produto", produtoOptional.get());
+            model.addAttribute("categorias", produtoServico.listarTodasCategorias()); // Para preencher o dropdown de categorias
+            return "admin/produtosform";
+        } else {
+            attributes.addFlashAttribute("mensagemErro", "Produto não encontrado!");
+            return "redirect:/admin/produtos"; // Redireciona para a lista se o produto não for encontrado
         }
-        return ResponseEntity.notFound().build();
+    }
+
+    // Salva ou atualiza um produto
+    @PostMapping("/salvar")
+    public String salvarProduto(@ModelAttribute("produto") Produto produto, RedirectAttributes attributes) {
+        // Log para depuração: verificar o ID da categoria recebido
+        if (produto.getCategoria() != null) {
+            System.out.println("ID da Categoria recebido no formulário: " + produto.getCategoria().getId());
+        }
+
+        produtoServico.salvar(produto);
+        attributes.addFlashAttribute("mensagemSucesso", "Produto salvo com sucesso!");
+        return "redirect:/admin/produtos";
+    }
+
+    // Deleta um produto
+    @GetMapping("/deletar/{id}")
+    public String deletarProduto(@PathVariable Long id, RedirectAttributes attributes) {
+        if (produtoServico.deletar(id)) {
+            attributes.addFlashAttribute("mensagemSucesso", "Produto excluído com sucesso!");
+        } else {
+            attributes.addFlashAttribute("mensagemErro", "Erro ao excluir produto. Produto não encontrado!");
+        }
+        return "redirect:/admin/produtos";
     }
 }
