@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Minhas Vendas - Meg Kids</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/main-theme.css">
+
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/vendedor/dashboard}">
+            <img th:src="@{/images/logomeg.jpeg}" alt="Logo Meg Kids" class="navbar-logo">
+            Painel do Vendedor
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/auth/logout}">Sair</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h2 class="text-center section-title mb-4">Minhas Vendas</h2>
+
+    <table class="table table-striped table-bordered bg-white">
+        <thead class="table-dark">
+        <tr>
+            <th>ID Venda</th>
+            <th>Cliente</th>
+            <th>Data</th>
+            <th>Forma Pgto.</th>
+            <th>Valor Total</th>
+            <th>Detalhes</th>
+        </tr>
+        </thead>
+        <tbody id="minhasVendasBody">
+        <tr><td colspan="6" class="text-center">Carregando suas vendas...</td></tr>
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="detalhesVendaModal" tabindex="-1" aria-labelledby="detalhesVendaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalhesVendaModalLabel">Detalhes da Venda #<span id="vendaDetalhesId"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Cliente:</strong> <span id="detalhesCliente"></span></p>
+                    <p><strong>Vendedor:</strong> <span id="detalhesVendedor"></span></p>
+                    <p><strong>Data da Venda:</strong> <span id="detalhesData"></span></p>
+                    <p><strong>Forma de Pagamento:</strong> <span id="detalhesFormaPgto"></span></p>
+                    <p><strong>Valor Total:</strong> <span id="detalhesValorTotal"></span></p>
+                    <h6 class="mt-4">Itens da Venda:</h6>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Preço Unitário</th>
+                            <th>Quantidade</th>
+                            <th>Subtotal</th>
+                        </tr>
+                        </thead>
+                        <tbody id="detalhesItensBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    const API_BASE_URL = /*[[@{/}]]*/ '';
+    const VENDAS_API_URL = API_BASE_URL + 'vendas';
+    const CLIENTES_API_URL = API_BASE_URL + 'api/clientes';
+    const PRODUTOS_API_URL = API_BASE_URL + 'api/produtos';
+    const USUARIOS_API_URL = API_BASE_URL + 'api/usuarios';
+
+    // AVISO: A obtenção do ID do usuário logado é CRÍTICA aqui.
+    // Em um sistema real, isso viria do backend após a autenticação,
+    // através de um endpoint que retorna as informações do usuário logado,
+    // ou injetado pelo Thymeleaf se o Spring Security expuser o objeto Authentication.
+    // Por enquanto, usaremos um ID fixo para demonstração.
+    const CURRENT_LOGGED_IN_USER_ID = 1; // SUBSTITUA PELA LÓGICA REAL DE OBTENÇÃO DO ID DO USUÁRIO LOGADO
+
+    document.addEventListener('DOMContentLoaded', () => {
+        carregarMinhasVendas();
+    });
+
+    async function carregarMinhasVendas() {
+        const tabelaBody = document.getElementById('minhasVendasBody');
+        tabelaBody.innerHTML = '<tr><td colspan="6" class="text-center">Carregando suas vendas...</td></tr>';
+
+        try {
+            // Se o seu VendaServico ou VendaControle tiver um método para filtrar por usuário,
+            // você usaria essa rota. Ex: /vendas?usuarioId=X
+            // Se não, você terá que filtrar no frontend (menos eficiente) ou criar um endpoint no backend.
+            const response = await fetch(VENDAS_API_URL); // Traz todas as vendas
+            if (!response.ok) {
+                throw new Error('Erro ao carregar vendas.');
+            }
+            let vendas = await response.json();
+
+            // Filtrar as vendas pelo usuário logado (apenas no frontend para este exemplo)
+            vendas = vendas.filter(venda => venda.usuarioId === CURRENT_LOGGED_IN_USER_ID);
+
+
+            tabelaBody.innerHTML = '';
+            if (vendas.length === 0) {
+                tabelaBody.innerHTML = '<tr><td colspan="6" class="text-center">Você ainda não registrou vendas.</td></tr>';
+                return;
+            }
+
+            for (const venda of vendas) {
+                const row = tabelaBody.insertRow();
+                row.insertCell().textContent = venda.id;
+
+                const clienteNome = await getNomeCliente(venda.clienteId);
+                row.insertCell().textContent = clienteNome;
+                row.insertCell().textContent = venda.dataVenda;
+                row.insertCell().textContent = venda.formaPagamento;
+                row.insertCell().textContent = `R$ ${venda.valorTotal.toFixed(2)}`;
+
+                const detalhesCell = row.insertCell();
+                const detalhesBtn = document.createElement('button');
+                detalhesBtn.className = 'btn btn-info btn-sm';
+                detalhesBtn.textContent = 'Detalhes';
+                detalhesBtn.onclick = () => exibirDetalhesVenda(venda);
+                detalhesCell.appendChild(detalhesBtn);
+            }
+        } catch (error) {
+            console.error('Erro ao carregar minhas vendas:', error);
+            tabelaBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Erro ao carregar suas vendas.</td></tr>';
+        }
+    }
+
+    // Funções auxiliares (getNomeCliente, getNomeProduto, getNomeUsuario, exibirDetalhesVenda)
+    // Essas funções são REUTILIZADAS do admin/vendas.html.
+    // Para evitar duplicação, você poderia colocá-las em um arquivo JS separado (ex: common-utils.js)
+    // e incluí-lo em ambos os HTMLs.
+
+    async function getNomeCliente(clienteId) {
+        if (!clienteId) return 'N/A';
+        try {
+            const response = await fetch(`${CLIENTES_API_URL}/${clienteId}`);
+            if (!response.ok) throw new Error('Cliente não encontrado.');
+            const cliente = await response.json();
+            return cliente.nome;
+        } catch (error) {
+            console.warn(`Não foi possível carregar o nome do cliente ID ${clienteId}:`, error);
+            return `ID: ${clienteId}`;
+        }
+    }
+
+    async function getNomeUsuario(usuarioId) {
+        if (!usuarioId) return 'N/A';
+        try {
+            const response = await fetch(`${USUARIOS_API_URL}/${usuarioId}`);
+            if (!response.ok) throw new Error('Usuário não encontrado.');
+            const usuario = await response.json();
+            return usuario.nome;
+        } catch (error) {
+            console.warn(`Não foi possível carregar o nome do usuário ID ${usuarioId}:`, error);
+            return `ID: ${usuarioId}`;
+        }
+    }
+
+    async function getNomeProduto(produtoId) {
+        if (!produtoId) return 'N/A';
+        try {
+            const response = await fetch(`${PRODUTOS_API_URL}/${produtoId}`);
+            if (!response.ok) throw new Error('Produto não encontrado.');
+            const produto = await response.json();
+            return produto.nome;
+        } catch (error) {
+            console.warn(`Não foi possível carregar o nome do produto ID ${produtoId}:`, error);
+            return `ID: ${produtoId}`;
+        }
+    }
+
+    async function exibirDetalhesVenda(venda) {
+        document.getElementById('vendaDetalhesId').textContent = venda.id;
+        document.getElementById('detalhesCliente').textContent = await getNomeCliente(venda.clienteId);
+        document.getElementById('detalhesVendedor').textContent = await getNomeUsuario(venda.usuarioId); // Pega o nome do vendedor
+        document.getElementById('detalhesData').textContent = venda.dataVenda;
+        document.getElementById('detalhesFormaPgto').textContent = venda.formaPagamento;
+        document.getElementById('detalhesValorTotal').textContent = `R$ ${venda.valorTotal.toFixed(2)}`;
+
+        const detalhesItensBody = document.getElementById('detalhesItensBody');
+        detalhesItensBody.innerHTML = '';
+
+        if (venda.itens && venda.itens.length > 0) {
+            for (const item of venda.itens) {
+                const row = detalhesItensBody.insertRow();
+                const produtoNome = await getNomeProduto(item.produtoId);
+                row.insertCell().textContent = produtoNome;
+                row.insertCell().textContent = `R$ ${item.precoUnitario ? item.precoUnitario.toFixed(2) : '0.00'}`;
+                row.insertCell().textContent = item.quantidade;
+                row.insertCell().textContent = `R$ ${item.subTotal ? item.subTotal.toFixed(2) : '0.00'}`;
+            }
+        } else {
+            detalhesItensBody.innerHTML = '<tr><td colspan="4" class="text-center">Nenhum item.</td></tr>';
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById('detalhesVendaModal'));
+        modal.show();
+    }
+</script>
+</body>
+</html>

@@ -26,6 +26,10 @@ public class UsuarioServico {
         return usuarioRepositorio.save(usuario);
     }
 
+    public Optional<Usuario> findByEmail(String email) {
+        return usuarioRepositorio.findByEmail(email);
+    }
+
     public Optional<Usuario> atualizar(Long id, Usuario novoUsuario) {
         return usuarioRepositorio.findById(id).map(usuario -> {
             usuario.setNome(novoUsuario.getNome());
