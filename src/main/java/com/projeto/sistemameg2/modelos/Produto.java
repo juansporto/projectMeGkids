@@ -1,3 +1,4 @@
+// src/main/java/com/projeto/sistemameg2/modelos/Produto.java
 package com.projeto.sistemameg2.modelos;
 
 import jakarta.persistence.*;
@@ -6,7 +7,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "produtos")
 public class Produto {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +21,7 @@ public class Produto {
 
     private BigDecimal preco;
 
-    @Column(name = "codigo_barras")
+    @Column(name = "codigo_barras", unique = true) // 'unique = true' é importante para códigos de barras
     private String codigoBarras;
 
     @ManyToOne
@@ -29,8 +30,10 @@ public class Produto {
 
     private Boolean status;
 
-    // Getters e Setters
+    // Construtor padrão (necessário para JPA)
+    public Produto() {}
 
+    // Getters e Setters
     public Long getId() {
         return id;
     }

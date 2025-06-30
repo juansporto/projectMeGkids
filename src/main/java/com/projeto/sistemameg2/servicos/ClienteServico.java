@@ -25,6 +25,9 @@ public class ClienteServico {
     public Cliente salvar(Cliente cliente) {
         return clienteRepositorio.save(cliente);
     }
+    
+    // REMOVA ESTE MÉTODO: public Cliente deletarCliente(Long id) {...}
+    // Ele é redundante e pode causar confusão.
 
     public Optional<Cliente> atualizar(Long id, Cliente novoCliente) {
         return clienteRepositorio.findById(id).map(cliente -> {
@@ -39,8 +42,8 @@ public class ClienteServico {
     public boolean deletar(Long id) {
         if (clienteRepositorio.existsById(id)) {
             clienteRepositorio.deleteById(id);
-            return true;
+            return true; // Retorna true se o cliente foi encontrado e deletado
         }
-        return false;
+        return false; // Retorna false se o cliente não foi encontrado
     }
 }

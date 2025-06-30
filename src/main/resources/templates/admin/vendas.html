@@ -1,85 +1,134 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Gerenciar Vendas</title>
+    <meta charset="UTF-8">
+    <title>Gerenciar Vendas - Meg Kids</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f8d7da;
-        }
-        .navbar {
-            background-color: #c2185b;
-        }
-        .nav-link, .navbar-brand {
-            color: white !important;
-        }
-        .btn-rosa {
-            background-color: #c2185b;
-            color: white;
-        }
-        .btn-rosa:hover {
-            background-color: #a0174a;
-            color: white;
-        }
-        .total-box {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #c2185b;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/main-theme-desktop.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/admin/dashboard}">Painel do Gerente</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/admin/clientes}">Clientes</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/admin/produtos}">Produtos (Completo)</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/admin/estoque}">Estoque (Simplificado)</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/admin/movimentacoes}">Movimentações</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/admin/vendas}">Vendas</a></li> <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
 
-<div class="container mt-4">
-    <h2 class="text-center mb-4">Gerenciamento de Vendas</h2>
+<div class="sidebar">
+    <img th:src="@{/imagens/logomeg.jpeg}" alt="Logo Meg Kids" class="sidebar-logo">
+    <h4>Meg Kids</h4>
+    <nav class="sidebar-nav">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/dashboard}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" th:href="@{/admin/vendas}">
+                    <i class="fas fa-cash-register"></i> Gestão de Vendas
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/produtos}">
+                    <i class="fas fa-boxes"></i> Gerenciar Produtos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/estoque}">
+                    <i class="fas fa-warehouse"></i> Controle de Estoque
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/clientes}">
+                    <i class="fas fa-users"></i> Cadastro de Clientes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/movimentacoes}">
+                    <i class="fas fa-exchange-alt"></i> Movimentações
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/categorias}">
+                    <i class="fas fa-tags"></i> Categorias
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/usuarios}">
+                    <i class="fas fa-user-cog"></i> Gerenciar Usuários
+                </a>
+            </li>
+            <li class="nav-item mt-auto">
+                <a class="nav-link" th:href="@{/auth/logout}">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
 
-    <div class="card bg-white p-4 mb-4">
-        <h4 class="mb-3">Registrar Nova Venda</h4>
+<div class="main-content">
+    <h1 class="section-title">Gerenciamento de Vendas</h1>
+    <p class="lead text-center mb-5" style="color: var(--text-medium);">Registre novas vendas e visualize o histórico completo.</p>
+
+    <div class="card p-4 mb-5">
+        <h4 class="mb-4" style="color: var(--dark-pink); font-weight: 600;">Registrar Nova Venda</h4>
         <form id="formVenda">
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="clienteId" class="form-label">Cliente</label>
                     <select class="form-select" id="clienteId" required>
+                        <option value="">Carregando clientes...</option>
                     </select>
                 </div>
                 <div class="col-md-6">
                     <label for="formaPagamento" class="form-label">Forma de Pagamento</label>
-                    <input type="text" class="form-control" id="formaPagamento" required placeholder="Ex: Cartão, Dinheiro, Pix">
+                    <select class="form-select" id="formaPagamento" required onchange="gerenciarPagamentoDinheiro()">
+                        <option value="">Selecione a Forma de Pagamento</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                        <option value="Pix">Pix</option>
+                        <option value="Boleto">Boleto</option>
+                        </select>
                 </div>
             </div>
 
-            <h5 class="mt-4 mb-3">Adicionar Produtos</h5>
+            <div id="camposDinheiro" class="row mb-3" style="display: none;">
+                <div class="col-md-6">
+                    <label for="valorRecebido" class="form-label">Valor Recebido (Dinheiro)</label>
+                    <input type="number" class="form-control" id="valorRecebido" min="0" step="0.01" oninput="calcularTroco()" placeholder="R$ 0.00">
+                </div>
+                <div class="col-md-6">
+                    <label for="valorTroco" class="form-label">Troco</label>
+                    <input type="text" class="form-control" id="valorTroco" readonly placeholder="R$ 0.00">
+                </div>
+            </div>
+
+            <h5 class="mt-4 mb-3" style="color: var(--dark-pink);">Adicionar Produtos</h5>
             <div class="row g-3 align-items-end mb-4">
                 <div class="col-md-6">
-                    <label for="produtoParaAdicionar" class="form-label">Produto</label>
-                    <select class="form-select" id="produtoParaAdicionar">
-                    </select>
+                    <label for="codigoBarrasProduto" class="form-label">Código de Barras</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="codigoBarrasProduto" placeholder="Digite o código de barras">
+                        <button type="button" class="btn btn-secondary" id="buscarProdutoPorCodigoBtn">Buscar</button>
+                    </div>
                 </div>
                 <div class="col-md-3">
                     <label for="quantidadeProduto" class="form-label">Quantidade</label>
                     <input type="number" class="form-control" id="quantidadeProduto" min="1" value="1">
                 </div>
                 <div class="col-md-3">
-                    <button type="button" class="btn btn-primary w-100" id="adicionarProdutoBtn">Adicionar</button>
+                    <label for="produtoParaAdicionar" class="form-label">Ou Selecione o Produto</label>
+                    <select class="form-select" id="produtoParaAdicionar">
+                        <option value="">Carregando produtos...</option>
+                    </select>
+                </div>
+                <div class="col-md-12 text-end mt-2">
+                     <button type="button" class="btn btn-primary" id="adicionarProdutoBtn">Adicionar Produto</button>
                 </div>
             </div>
 
-            <h5 class="mb-3">Itens da Venda</h5>
-            <table class="table table-bordered bg-light">
+            <h5 class="mb-3" style="color: var(--dark-pink);">Itens da Venda</h5>
+            <table class="table table-bordered">
                 <thead>
                 <tr>
                     <th>Produto</th>
@@ -104,11 +153,11 @@
                 <button type="submit" class="btn btn-rosa btn-lg">Finalizar Venda</button>
             </div>
         </form>
-        <div id="mensagemVenda" class="mt-3"></div>
+        <div id="mensagemVenda" class="mt-4"></div>
     </div>
 
-    <h3 class="mt-5 mb-3">Histórico de Vendas</h3>
-    <table class="table table-striped table-bordered bg-white">
+    <h3 class="section-title mt-5 mb-4" style="font-size: 1.8em;">Histórico de Vendas</h3>
+    <table class="table table-striped table-bordered">
         <thead class="table-dark">
         <tr>
             <th>ID Venda</th>
@@ -139,7 +188,7 @@
                     <p><strong>Data da Venda:</strong> <span id="detalhesData"></span></p>
                     <p><strong>Forma de Pagamento:</strong> <span id="detalhesFormaPgto"></span></p>
                     <p><strong>Valor Total:</strong> <span id="detalhesValorTotal"></span></p>
-                    <h6 class="mt-4">Itens da Venda:</h6>
+                    <h6 class="mt-4" style="color: var(--dark-pink);">Itens da Venda:</h6>
                     <table class="table table-bordered">
                         <thead>
                         <tr>
@@ -159,47 +208,46 @@
             </div>
         </div>
     </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Meg Kids. Todos os direitos reservados.</p>
+    </footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">
     const API_BASE_URL = /*[[@{/}]]*/ '';
-    const VENDAS_API_URL = API_BASE_URL + 'vendas';
-    // Precisamos de um API RESTful para Clientes para o dropdown. Se seu ClienteControle NÃO é @RestController,
-    // você precisará criar um ClienteApiControle, similar ao ProdutoApiControle.
-    const CLIENTES_API_URL = API_BASE_URL + 'api/clientes'; // Assumindo /api/clientes
-    const PRODUTOS_API_URL = API_BASE_URL + 'api/produtos'; // Sua API REST para Produtos
+    // Ajuste as URLs da API para o novo padrão /api/...
+    const VENDAS_API_URL = API_BASE_URL + 'api/vendas'; // <-- Ajustado
+    const CLIENTES_API_URL = API_BASE_URL + 'api/clientes';
+    const PRODUTOS_API_URL = API_BASE_URL + 'api/produtos'; // <-- Ajustado para o ProdutoAPIControle
+    const USUARIOS_API_URL = API_BASE_URL + 'api/usuarios';
 
-    // AVISO: PARA FINS DE EXEMPLO, O usuarioId ESTÁ FIXO.
-    // Em um sistema real, o usuarioId viria do usuário autenticado no backend (ex: através de Spring Security).
-    const CURRENT_USER_ID = 1; // Substitua pela lógica real de obtenção do ID do usuário logado
+    const CURRENT_USER_ID = 1; // Lembre-se: Substitua pela lógica real de obtenção do ID do usuário logado!
 
-    let itensNoCarrinho = []; // Array para armazenar os produtos adicionados à venda
+    let itensNoCarrinho = [];
+    let valorTotalAtual = 0; // Variável para armazenar o valor total calculado
 
     document.addEventListener('DOMContentLoaded', () => {
         carregarClientesParaDropdown();
         carregarProdutosParaAdicionar();
-        carregarVendas(); // Carrega o histórico de vendas
+        carregarVendas();
 
-        // Evento para adicionar produto ao carrinho
         document.getElementById('adicionarProdutoBtn').addEventListener('click', adicionarProdutoAoCarrinho);
-
-        // Evento para finalizar a venda
+        document.getElementById('buscarProdutoPorCodigoBtn').addEventListener('click', buscarProdutoPorCodigoBarras);
         document.getElementById('formVenda').addEventListener('submit', finalizarVenda);
+        document.getElementById('valorRecebido').addEventListener('input', calcularTroco);
     });
 
     async function carregarClientesParaDropdown() {
         const selectCliente = document.getElementById('clienteId');
         selectCliente.innerHTML = '<option value="">Carregando clientes...</option>';
-
         try {
-            // Se seu ClienteControle NÃO é um @RestController, você precisará criar um ClienteApiControle.
             const response = await fetch(CLIENTES_API_URL);
             if (!response.ok) {
                 throw new Error('Erro ao carregar clientes.');
             }
             const clientes = await response.json();
-
             selectCliente.innerHTML = '<option value="">Selecione um Cliente</option>';
             clientes.forEach(cliente => {
                 const option = document.createElement('option');
@@ -217,14 +265,12 @@
     async function carregarProdutosParaAdicionar() {
         const selectProduto = document.getElementById('produtoParaAdicionar');
         selectProduto.innerHTML = '<option value="">Carregando produtos...</option>';
-
         try {
-            const response = await fetch(PRODUTOS_API_URL);
+            const response = await fetch(PRODUTOS_API_URL); // Busca todos os produtos da API
             if (!response.ok) {
                 throw new Error('Erro ao carregar produtos.');
             }
             const produtos = await response.json();
-
             selectProduto.innerHTML = '<option value="">Selecione um Produto</option>';
             produtos.forEach(produto => {
                 const option = document.createElement('option');
@@ -242,6 +288,63 @@
         }
     }
 
+    // FUNÇÃO PARA BUSCAR PRODUTO POR CÓDIGO DE BARRAS
+    async function buscarProdutoPorCodigoBarras() {
+        const codigoBarras = document.getElementById('codigoBarrasProduto').value.trim();
+        if (!codigoBarras) {
+            mostrarMensagemVenda('Por favor, digite um código de barras.', 'warning');
+            return;
+        }
+
+        try {
+            // A URL completa será: /api/produtos/por-codigo/{codigoBarras}
+            const response = await fetch(`${PRODUTOS_API_URL}/por-codigo/${codigoBarras}`); 
+            if (!response.ok) {
+                if (response.status === 404) {
+                    mostrarMensagemVenda('Produto não encontrado para o código de barras informado.', 'danger');
+                } else {
+                    throw new new Error(`Erro ${response.status}: ${response.statusText}`); // Lança um erro mais detalhado
+                }
+                return;
+            }
+            const produto = await response.json();
+            
+            const selectProdutoElem = document.getElementById('produtoParaAdicionar');
+            const quantidadeInput = document.getElementById('quantidadeProduto');
+
+            // Tenta encontrar e selecionar o produto no dropdown existente
+            let foundOption = false;
+            for (let i = 0; i < selectProdutoElem.options.length; i++) {
+                if (parseInt(selectProdutoElem.options[i].value) === produto.id) {
+                    selectProdutoElem.value = produto.id;
+                    foundOption = true;
+                    break;
+                }
+            }
+
+            // Se o produto não estiver no dropdown (o que não deveria acontecer se a lista é completa, mas para robustez)
+            if (!foundOption) {
+                const option = document.createElement('option');
+                option.value = produto.id;
+                option.setAttribute('data-nome', produto.nome);
+                option.setAttribute('data-preco', produto.preco);
+                option.setAttribute('data-estoque', produto.quantidadeEstoque);
+                option.textContent = `${produto.nome} (Estoque: ${produto.quantidadeEstoque}, R$ ${produto.preco.toFixed(2)})`;
+                selectProdutoElem.appendChild(option);
+                selectProdutoElem.value = produto.id;
+            }
+            
+            quantidadeInput.value = 1; // Define a quantidade padrão como 1
+            adicionarProdutoAoCarrinho(); // Adiciona o produto encontrado ao carrinho
+            document.getElementById('codigoBarrasProduto').value = ''; // Limpa o campo de código de barras
+            
+        } catch (error) {
+            console.error('Erro ao buscar produto por código de barras:', error);
+            mostrarMensagemVenda(`Erro na comunicação com o servidor ao buscar produto: ${error.message}`, 'danger');
+        }
+    }
+
+
     function adicionarProdutoAoCarrinho() {
         const selectProdutoElem = document.getElementById('produtoParaAdicionar');
         const quantidadeInput = document.getElementById('quantidadeProduto');
@@ -250,7 +353,7 @@
         const quantidade = parseInt(quantidadeInput.value);
 
         if (!produtoId) {
-            mostrarMensagemVenda('Selecione um produto para adicionar.', 'warning');
+            mostrarMensagemVenda('Selecione um produto ou use o código de barras para adicionar.', 'warning');
             return;
         }
         if (isNaN(quantidade) || quantidade <= 0) {
@@ -263,11 +366,9 @@
         const precoUnitario = parseFloat(selectedOption.getAttribute('data-preco'));
         const estoqueDisponivel = parseInt(selectedOption.getAttribute('data-estoque'));
 
-        // Verifica se o produto já está no carrinho e se a quantidade não excede o estoque
         const itemExistenteIndex = itensNoCarrinho.findIndex(item => item.produtoId === parseInt(produtoId));
 
         if (itemExistenteIndex !== -1) {
-            // Se o item já está no carrinho, atualiza a quantidade
             const novaQuantidadeTotal = itensNoCarrinho[itemExistenteIndex].quantidade + quantidade;
             if (novaQuantidadeTotal > estoqueDisponivel) {
                 mostrarMensagemVenda(`Quantidade total para ${nomeProduto} excede o estoque disponível (${estoqueDisponivel}).`, 'danger');
@@ -276,7 +377,6 @@
             itensNoCarrinho[itemExistenteIndex].quantidade = novaQuantidadeTotal;
             itensNoCarrinho[itemExistenteIndex].subTotal = precoUnitario * novaQuantidadeTotal;
         } else {
-            // Se é um novo item, verifica o estoque inicial
             if (quantidade > estoqueDisponivel) {
                 mostrarMensagemVenda(`Quantidade solicitada para ${nomeProduto} excede o estoque disponível (${estoqueDisponivel}).`, 'danger');
                 return;
@@ -292,8 +392,8 @@
 
         renderizarItensDoCarrinho();
         calcularValorTotalVenda();
-        quantidadeInput.value = 1; // Reseta a quantidade para 1
-        selectProdutoElem.value = ""; // Limpa a seleção do produto
+        quantidadeInput.value = 1;
+        selectProdutoElem.value = "";
     }
 
     function removerProdutoDoCarrinho(index) {
@@ -304,7 +404,7 @@
 
     function renderizarItensDoCarrinho() {
         const itensVendaBody = document.getElementById('itensVendaBody');
-        itensVendaBody.innerHTML = ''; // Limpa a tabela
+        itensVendaBody.innerHTML = '';
 
         if (itensNoCarrinho.length === 0) {
             itensVendaBody.innerHTML = '<tr><td colspan="5" class="text-center">Nenhum item adicionado.</td></tr>';
@@ -329,8 +429,42 @@
 
     function calcularValorTotalVenda() {
         const valorTotalElement = document.getElementById('valorTotalVenda');
-        const total = itensNoCarrinho.reduce((sum, item) => sum + item.subTotal, 0);
-        valorTotalElement.textContent = `R$ ${total.toFixed(2)}`;
+        valorTotalAtual = itensNoCarrinho.reduce((sum, item) => sum + item.subTotal, 0); // Atualiza a variável global
+        valorTotalElement.textContent = `R$ ${valorTotalAtual.toFixed(2)}`;
+        calcularTroco(); // Recalcula o troco se o total da venda mudar
+    }
+
+    function gerenciarPagamentoDinheiro() {
+        const formaPagamento = document.getElementById('formaPagamento').value;
+        const camposDinheiroDiv = document.getElementById('camposDinheiro');
+        const valorRecebidoInput = document.getElementById('valorRecebido');
+        const valorTrocoInput = document.getElementById('valorTroco');
+
+        if (formaPagamento === 'Dinheiro') {
+            camposDinheiroDiv.style.display = 'flex'; // ou 'block' se preferir empilhar
+            valorRecebidoInput.setAttribute('required', 'required');
+            valorRecebidoInput.focus(); // Foca no campo de valor recebido
+            calcularTroco(); // Garante que o troco seja calculado ao mudar para dinheiro
+        } else {
+            camposDinheiroDiv.style.display = 'none';
+            valorRecebidoInput.removeAttribute('required');
+            valorRecebidoInput.value = ''; // Limpa o valor recebido
+            valorTrocoInput.value = ''; // Limpa o troco
+        }
+    }
+
+    function calcularTroco() {
+        const valorRecebido = parseFloat(document.getElementById('valorRecebido').value) || 0;
+        const valorTrocoInput = document.getElementById('valorTroco');
+        
+        const troco = valorRecebido - valorTotalAtual;
+        valorTrocoInput.value = `R$ ${troco.toFixed(2)}`;
+        
+        if (troco < 0) {
+            valorTrocoInput.style.color = 'red';
+        } else {
+            valorTrocoInput.style.color = 'green';
+        }
     }
 
     async function finalizarVenda(event) {
@@ -338,6 +472,7 @@
 
         const clienteId = document.getElementById('clienteId').value;
         const formaPagamento = document.getElementById('formaPagamento').value.trim();
+        const valorRecebido = document.getElementById('valorRecebido').value;
 
         if (!clienteId || !formaPagamento) {
             mostrarMensagemVenda('Preencha o cliente e a forma de pagamento.', 'danger');
@@ -348,14 +483,22 @@
             return;
         }
 
+        if (formaPagamento === 'Dinheiro') {
+            const valRecebidoNum = parseFloat(valorRecebido);
+            if (isNaN(valRecebidoNum) || valRecebidoNum < valorTotalAtual) {
+                mostrarMensagemVenda('Para pagamento em dinheiro, o valor recebido deve ser igual ou maior que o valor total da venda.', 'danger');
+                return;
+            }
+        }
+
         const vendaPayload = {
             clienteId: parseInt(clienteId),
             usuarioId: CURRENT_USER_ID,
             formaPagamento: formaPagamento,
+            valorRecebido: formaPagamento === 'Dinheiro' ? parseFloat(valorRecebido) : null,
             itens: itensNoCarrinho.map(item => ({
                 produtoId: item.produtoId,
                 quantidade: item.quantidade
-                // precoUnitario e subTotal são calculados no backend
             }))
         };
 
@@ -372,12 +515,12 @@
 
             if (response.ok) {
                 mostrarMensagemVenda('Venda registrada com sucesso!', 'success');
-                // Limpa o formulário e o carrinho
                 document.getElementById('formVenda').reset();
                 itensNoCarrinho = [];
                 renderizarItensDoCarrinho();
                 calcularValorTotalVenda();
-                carregarVendas(); // Recarrega a tabela de histórico de vendas
+                gerenciarPagamentoDinheiro();
+                carregarVendas();
             } else {
                 mostrarMensagemVenda(`Erro ao registrar venda: ${resultado.message || response.statusText}`, 'danger');
             }
@@ -390,34 +533,25 @@
     async function carregarVendas() {
         const tabelaVendasBody = document.getElementById('tabelaVendasBody');
         tabelaVendasBody.innerHTML = '<tr><td colspan="8" class="text-center">Carregando vendas...</td></tr>';
-
         try {
             const response = await fetch(VENDAS_API_URL);
             if (!response.ok) {
                 throw new Error('Erro ao carregar vendas.');
             }
             const vendas = await response.json();
-
-            tabelaVendasBody.innerHTML = ''; // Limpa a tabela
+            tabelaVendasBody.innerHTML = '';
             if (vendas.length === 0) {
                 tabelaVendasBody.innerHTML = '<tr><td colspan="8" class="text-center">Nenhuma venda registrada.</td></tr>';
                 return;
             }
-
             for (const venda of vendas) {
                 const row = tabelaVendasBody.insertRow();
                 row.insertCell().textContent = venda.id;
-
-                // Para obter Nome do Cliente e Vendedor, precisaremos de mais requisições
-                // ou ajustar os DTOs de Venda para incluir esses nomes.
-                // Por agora, exibimos os IDs.
-                // ALTERNATIVA: Criar API REST para Clientes/Usuários para buscar por ID.
                 const clienteNome = await getNomeCliente(venda.clienteId);
                 const usuarioNome = await getNomeUsuario(venda.usuarioId);
-
                 row.insertCell().textContent = clienteNome;
                 row.insertCell().textContent = usuarioNome;
-                row.insertCell().textContent = venda.dataVenda; // Data já formatada no backend
+                row.insertCell().textContent = venda.dataVenda;
                 row.insertCell().textContent = venda.formaPagamento;
                 row.insertCell().textContent = `R$ ${venda.valorTotal.toFixed(2)}`;
 
@@ -425,7 +559,7 @@
                 const detalhesBtn = document.createElement('button');
                 detalhesBtn.className = 'btn btn-info btn-sm';
                 detalhesBtn.textContent = 'Ver Detalhes';
-                detalhesBtn.onclick = () => exibirDetalhesVenda(venda); // Passa o objeto venda
+                detalhesBtn.onclick = () => exibirDetalhesVenda(venda);
                 detalhesCell.appendChild(detalhesBtn);
 
                 const acoesCell = row.insertCell();
@@ -444,7 +578,7 @@
     async function getNomeCliente(clienteId) {
         if (!clienteId) return 'N/A';
         try {
-            const response = await fetch(`${API_BASE_URL}api/clientes/${clienteId}`);
+            const response = await fetch(`${CLIENTES_API_URL}/${clienteId}`);
             if (!response.ok) throw new Error('Cliente não encontrado.');
             const cliente = await response.json();
             return cliente.nome;
@@ -457,11 +591,10 @@
     async function getNomeUsuario(usuarioId) {
         if (!usuarioId) return 'N/A';
         try {
-            // Você precisará de uma API REST para Usuários. Ex: /api/usuarios/{id}
-            const response = await fetch(`${API_BASE_URL}api/usuarios/${usuarioId}`);
+            const response = await fetch(`${USUARIOS_API_URL}/${usuarioId}`);
             if (!response.ok) throw new Error('Usuário não encontrado.');
             const usuario = await response.json();
-            return usuario.nome; // Assumindo que a entidade Usuario tem um campo 'nome'
+            return usuario.nome;
         } catch (error) {
             console.warn(`Não foi possível carregar o nome do usuário ID ${usuarioId}:`, error);
             return `ID: ${usuarioId}`;
@@ -482,7 +615,7 @@
         if (venda.itens && venda.itens.length > 0) {
             for (const item of venda.itens) {
                 const row = detalhesItensBody.insertRow();
-                const produtoNome = await getNomeProduto(item.produtoId); // Você precisará desta função
+                const produtoNome = await getNomeProduto(item.produtoId);
                 row.insertCell().textContent = produtoNome;
                 row.insertCell().textContent = `R$ ${item.precoUnitario ? item.precoUnitario.toFixed(2) : '0.00'}`;
                 row.insertCell().textContent = item.quantidade;
@@ -499,7 +632,6 @@
     async function getNomeProduto(produtoId) {
         if (!produtoId) return 'N/A';
         try {
-            // Usando sua API de produtos existente para buscar um único produto
             const response = await fetch(`${PRODUTOS_API_URL}/${produtoId}`);
             if (!response.ok) throw new Error('Produto não encontrado.');
             const produto = await response.json();
@@ -522,9 +654,9 @@
 
             if (response.ok) {
                 mostrarMensagemVenda('Venda excluída e estoque revertido com sucesso!', 'success');
-                carregarVendas(); // Recarrega o histórico
+                carregarVendas();
             } else {
-                const errorText = await response.text(); // Lê o corpo da resposta para erros
+                const errorText = await response.text();
                 mostrarMensagemVenda(`Erro ao excluir venda: ${errorText || response.statusText}`, 'danger');
             }
         } catch (error) {
@@ -536,9 +668,15 @@
     function mostrarMensagemVenda(texto, tipo) {
         const mensagemDiv = document.getElementById('mensagemVenda');
         mensagemDiv.innerHTML = `<div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
-                                    ${texto}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>`;
+                                        ${texto}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>`;
+        setTimeout(() => {
+            const alertElement = mensagemDiv.querySelector('.alert');
+            if (alertElement) {
+                new bootstrap.Alert(alertElement).close();
+            }
+        }, 5000);
     }
 </script>
 </body>

@@ -1,0 +1,472 @@
+/* main-theme-desktop.css - Tema Otimizado para Desktop */
+
+/* ---------- VARIÁVEIS DE CORES ---------- */
+:root {
+    /* Cores da Meg Kids - ajustadas para um rosa mais harmonioso e vibrante */
+    --megkids-primary: #FF69B4; /* Rosa principal, vibrante (Hot Pink) */
+    --megkids-secondary: #FFB6C1; /* Rosa claro, para detalhes e backgrounds suaves (Light Pink) */
+    --megkids-dark: #C2185B; /* Rosa escuro/vinho, para textos e elementos de destaque */
+    --megkids-gradient-start: #FF69B4; /* Início do gradiente */
+    --megkids-gradient-end: #E05AA3;   /* Fim do gradiente, um tom de rosa um pouco mais escuro */
+
+    /* Cores de texto */
+    --text-heading: #343a40; /* Cor para títulos principais */
+    --text-body: #495057;    /* Cor para texto do corpo */
+    --text-light: #f8f9fa;   /* Cor para texto claro (sidebar) */
+
+    /* Cores de fundo e elementos */
+    --bg-body: #f4f7f6; /* Fundo geral da página, um cinza bem suave */
+    --bg-sidebar: #343a40; /* Fundo da sidebar, mantendo o escuro para contraste */
+    --bg-card: #ffffff;    /* Fundo dos cards e elementos brancos */
+    --bg-total-box: #fff0f5; /* Fundo da caixa de total, um rosa super claro */
+    --border-light: #e0e0e0; /* Cor de borda leve */
+
+    /* Sombras */
+    --shadow-sm: rgba(0,0,0,0.05);   /* Sombra pequena e suave */
+    --shadow-md: rgba(0,0,0,0.1);    /* Sombra média */
+    --shadow-lg: rgba(0,0,0,0.18);   /* Sombra grande para hover */
+}
+
+/* ---------- ESTILO GERAL DO CORPO ---------- */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-body);
+    overflow-x: hidden;
+    color: var(--text-body);
+}
+
+.navbar { display: none; }
+body::before { content: none; }
+
+/* ---------- SIDEBAR (Barra Lateral) ---------- */
+.sidebar {
+    width: 280px;
+    background-color: var(--bg-sidebar);
+    color: var(--text-light);
+    padding: 25px 20px;
+    box-shadow: 2px 0 8px var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+    z-index: 1000;
+}
+
+.sidebar .sidebar-logo {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    margin-bottom: 25px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: 3px solid var(--megkids-secondary);
+    object-fit: cover;
+}
+
+.sidebar h4 {
+    text-align: center;
+    margin-bottom: 35px;
+    color: var(--text-light);
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.sidebar-nav .nav-item { margin-bottom: 10px; }
+
+.sidebar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.sidebar-nav .nav-link:hover {
+    background-color: var(--megkids-gradient-end);
+    color: var(--text-light);
+    transform: translateX(8px);
+    box-shadow: 0 4px 10px var(--shadow-sm);
+}
+
+.sidebar-nav .nav-link.active {
+    background: linear-gradient(90deg, var(--megkids-primary), var(--megkids-gradient-end));
+    color: var(--text-light);
+    box-shadow: 0 4px 10px var(--shadow-md);
+    transform: translateX(4px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.sidebar-nav .nav-link i {
+    width: 28px;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.sidebar-nav .nav-item.mt-auto {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ---------- CONTEÚDO PRINCIPAL ---------- */
+.main-content {
+    flex-grow: 1;
+    padding: 40px;
+    overflow-y: auto;
+    background-color: var(--bg-body);
+}
+
+.section-title {
+    color: var(--megkids-dark);
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2.8rem;
+    letter-spacing: 0.5px;
+}
+
+.main-content .lead.text-center.mb-5 {
+    color: var(--text-body);
+    font-size: 1.2rem;
+    margin-bottom: 50px !important;
+}
+
+.section-title-small {
+    color: var(--megkids-dark);
+    font-size: 2rem;
+    font-weight: 600;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* ---------- CARDS GERAIS ---------- */
+.card {
+    background-color: var(--bg-card);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px var(--shadow-md);
+    margin-bottom: 40px;
+    border: none;
+    padding: 30px;
+}
+
+.card-title {
+    color: var(--megkids-dark);
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--megkids-secondary);
+    padding-bottom: 15px;
+    text-align: center;
+}
+
+.card-subtitle {
+    color: var(--megkids-dark);
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* ---------- DASHBOARD CARDS (específicos) ---------- */
+.dashboard-card {
+    background-color: var(--bg-card);
+    border-radius: 15px;
+    padding: 35px 25px;
+    text-align: center;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.4s ease, color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 220px;
+    box-shadow: 0 6px 15px var(--shadow-sm);
+    color: var(--text-heading);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px var(--shadow-lg);
+    color: var(--megkids-primary);
+}
+
+.dashboard-card .card-icon {
+    font-size: 4em;
+    margin-bottom: 20px;
+    color: var(--megkids-dark);
+    transition: color 0.3s ease;
+}
+
+.dashboard-card:hover .card-icon {
+    color: var(--megkids-primary);
+}
+
+.dashboard-card h5 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: inherit;
+    transition: color 0.3s ease;
+}
+
+.dashboard-card p {
+    font-size: 1.1em;
+    color: var(--text-body);
+}
+
+.row-cols-lg-3 {
+    --bs-gutter-x: 2rem;
+    --bs-gutter-y: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--bs-gutter-x);
+}
+
+@media (min-width: 1200px) {
+    .row-cols-lg-3 { grid-template-columns: repeat(4, 1fr); }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+    .row-cols-lg-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ---------- BOTÕES GERAIS ---------- */
+.btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 2px 5px var(--shadow-sm);
+}
+
+.btn-primary {
+    background-color: var(--megkids-primary);
+    border-color: var(--megkids-primary);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: var(--megkids-gradient-end);
+    border-color: var(--megkids-gradient-end);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-md);
+}
+
+.btn-rosa {
+    background-color: var(--megkids-dark);
+    color: white;
+    border: none;
+    font-size: 1.15rem;
+    padding: 12px 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(194, 24, 91, 0.4);
+}
+.btn-rosa:hover {
+    background-color: darken(var(--megkids-dark), 8%); /* Esta linha pode precisar de um pré-processador */
+    border-color: darken(var(--megkids-dark), 8%);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(194, 24, 91, 0.6);
+}
+
+.btn-outline-rosa {
+    color: var(--megkids-dark);
+    border: 2px solid var(--megkids-dark);
+    background-color: transparent;
+}
+.btn-outline-rosa:hover {
+    background-color: var(--megkids-dark);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-md);
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    color: white;
+}
+.btn-info:hover {
+    background-color: #138496;
+    border-color: #117a8b;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+
+/* ---------- TABELAS ---------- */
+.table {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px var(--shadow-sm);
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table thead {
+    background: linear-gradient(90deg, var(--megkids-dark), var(--megkids-gradient-end));
+    color: var(--text-light);
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.table th, .table td {
+    padding: 15px;
+    vertical-align: middle;
+    border-top: 1px solid var(--border-light);
+}
+
+.table thead th:first-child { border-top-left-radius: 12px; }
+.table thead th:last-child { border-top-right-radius: 12px; }
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #fcfcfc;
+}
+
+.table tbody tr:hover {
+    background-color: #fce8f0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.table-bordered th, .table-bordered td {
+    border: 1px solid var(--border-light);
+}
+
+.total-box {
+    font-weight: bold;
+    color: var(--megkids-dark);
+    font-size: 1.4rem;
+    background-color: var(--bg-total-box);
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--megkids-secondary);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* ---------- FORMULÁRIOS ---------- */
+.form-label {
+    color: var(--text-heading);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-control,
+.form-select {
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--megkids-primary);
+    box-shadow: 0 0 0 0.25rem rgba(255, 105, 180, 0.3);
+    outline: none;
+}
+
+/* ---------- ALERTAS ---------- */
+.alert {
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-color: #ffeeba;
+}
+.alert .btn-close {
+    font-size: 0.9em;
+}
+
+/* ---------- RODAPÉ ---------- */
+.footer {
+    text-align: center;
+    padding: 25px;
+    margin-top: 60px;
+    color: var(--text-body);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-light);
+}
+
+/* ---------- GRÁFICOS (Chart.js) ---------- */
+.grafico-container {
+    max-width: 950px;
+    margin: 3rem auto;
+    background-color: var(--bg-card);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px var(--shadow-md);
+    text-align: center;
+}
+
+.grafico-container h5 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--megkids-dark);
+    margin-bottom: 25px;
+}
+
+.grafico-maior {
+    width: 100% !important;
+    height: 450px !important;
+}
+
+/* ---------- UTILITÁRIOS E AJUSTES DE ESPAÇAMENTO ---------- */
+.mb-5 { margin-bottom: 3.5rem !important; }
+.mt-5 { margin-top: 3.5rem !important; }
+
+.main-content > .container,
+.main-content > .card,
+.main-content > .table,
+.main-content > .grafico-container {
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card .table {
+    margin-bottom: 0;
+}

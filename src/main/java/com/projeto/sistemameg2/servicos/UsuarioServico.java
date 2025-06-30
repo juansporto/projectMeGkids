@@ -1,6 +1,7 @@
 package com.projeto.sistemameg2.servicos;
 
 import com.projeto.sistemameg2.modelos.Usuario;
+import com.projeto.sistemameg2.repositorios.MovimentacaoEstoqueRepositorio;
 import com.projeto.sistemameg2.repositorios.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,9 @@ public class UsuarioServico {
 
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
+
+    @Autowired
+    private MovimentacaoEstoqueRepositorio movimentacaoEstoqueRepositorio;
 
     public List<Usuario> listar() {
         return usuarioRepositorio.findAll();
@@ -41,10 +45,17 @@ public class UsuarioServico {
     }
 
     public boolean deletar(Long id) {
-        if (usuarioRepositorio.existsById(id)) {
-            usuarioRepositorio.deleteById(id);
-            return true;
+        if (!usuarioRepositorio.existsById(id)) {
+            return false;
         }
-        return false;
+
+        // Verifica se o usuário possui movimentações de estoque
+        boolean temMovimentacoes = movimentacaoEstoqueRepositorio.existsByUsuarioId(id);
+        if (temMovimentacoes) {
+            throw new RuntimeException("Não é possível excluir: o usuário possui movimentações de estoque.");
+        }
+
+        usuarioRepositorio.deleteById(id);
+        return true;
     }
 }

@@ -1,6 +1,8 @@
+// src/main/java/com/projeto/sistemameg2/controle/ProdutoWebControle.java
 package com.projeto.sistemameg2.controle;
 
 import com.projeto.sistemameg2.modelos.Produto;
+import com.projeto.sistemameg2.modelos.Categoria; // Importe a categoria
 import com.projeto.sistemameg2.servicos.ProdutoServico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +25,7 @@ public class ProdutoWebControle {
     public String listarProdutos(Model model) {
         List<Produto> produtos = produtoServico.listarTodos();
         model.addAttribute("produtos", produtos);
-        return "admin/produtoslista"; // Retorna o nome do template Thymeleaf (localizado em src/main/resources/templates/admin/lista-produtos.html)
+        return "admin/produtoslista"; // Retorna o nome do template Thymeleaf (localizado em src/main/resources/templates/admin/produtoslista.html)
     }
 
     // Exibe o formulário para um novo produto
@@ -31,7 +33,7 @@ public class ProdutoWebControle {
     public String exibirFormularioDeNovoProduto(Model model) {
         model.addAttribute("produto", new Produto());
         model.addAttribute("categorias", produtoServico.listarTodasCategorias()); // Para preencher o dropdown de categorias
-        return "admin/produtosform"; // Retorna o nome do template Thymeleaf
+        return "admin/produtosform"; // Retorna o nome do template Thymeleaf (localizado em src/main/resources/templates/admin/produtosform.html)
     }
 
     // Exibe o formulário para editar um produto existente

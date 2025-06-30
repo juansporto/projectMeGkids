@@ -9,9 +9,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List; // Importação adicionada para List
 import java.util.Optional;
 
 @Controller
@@ -26,26 +29,23 @@ public class VendedorControle {
 
     @GetMapping("/dashboard")
     public String dashboardVendedor(Model model) {
-        return "vendedor/dashboard"; // Garante que a view do dashboard do vendedor seja retornada
+        return "vendedor/dashboard"; 
     }
 
     @GetMapping("/clientes")
     public String listarClientesParaVendedor(Model model) {
         model.addAttribute("clientes", clienteServico.listarTodos());
-        return "vendedor/clienteslista"; // Você precisa ter um arquivo 'clienteslista.html' em 'templates/vendedor/'
+        return "vendedor/clienteslista";
     }
 
     @GetMapping("/vendas")
     public String registrarVenda() {
-        return "vendedor/vendas"; // CORREÇÃO AQUI: Retorna a página de vendas da pasta do VENDEDOR
+        return "vendedor/vendas"; 
     }
 
     @GetMapping("/produtos")
     public String consultarProdutos() {
-        // CORREÇÃO AQUI: Um vendedor não deveria ver o estoque completo do admin.
-        // Se precisar de uma tela de consulta de produtos para o vendedor, crie uma específica:
-        return "vendedor/produtos_consulta"; // Exemplo: Você precisará criar esta view
-        // Ou se não houver necessidade, remova este método e o link da navbar do vendedor.
+        return "vendedor/produtos_consulta"; 
     }
 
     @GetMapping("/minhas-vendas")
@@ -55,20 +55,45 @@ public class VendedorControle {
             Optional<Usuario> usuarioLogado = usuarioServico.findByEmail(userEmail);
             usuarioLogado.ifPresent(usuario -> model.addAttribute("currentUserId", usuario.getId()));
         }
-        return "vendedor/minhas_vendas"; // Você precisa ter esta página em 'templates/vendedor/'
+        return "vendedor/minhas_vendas";
     }
 
     @GetMapping("/clientes/novo")
     public String novoClienteVendedor(Model model) {
         model.addAttribute("cliente", new Cliente());
-        // Se 'admin/clientesform' não tem elementos específicos de gerente, pode reutilizar.
-        // Caso contrário, crie 'vendedor/clientesform.html'
-        return "admin/clientesform"; // Mantenha assim por enquanto se for aceitável.
+        return "vendedor/clientesform"; 
     }
 
     @PostMapping("/clientes/salvar")
     public String salvarClienteVendedor(Cliente cliente) {
         clienteServico.salvar(cliente);
         return "redirect:/vendedor/clientes";
+    }
+    
+    @GetMapping("/clientes/editar/{id}")
+    public String editarClienteForm(@PathVariable Long id, Model model) {
+        // Certifique-se de que buscarPorId retorna Cliente, ou lide com Optional
+        Cliente cliente = clienteServico.buscarPorId(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado")); 
+        model.addAttribute("cliente", cliente);
+        return "vendedor/clientesform"; 
+    }
+
+    @GetMapping("/clientes/deletar/{id}")
+    public String deletarCliente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            // Chamando o método 'deletar' que retorna boolean
+            boolean deletado = clienteServico.deletar(id); 
+            if (deletado) {
+                redirectAttributes.addFlashAttribute("message", "Cliente excluído com sucesso!");
+            } else {
+                // Se deletar retornar false, o cliente não foi encontrado
+                redirectAttributes.addFlashAttribute("errorMessage", "Cliente não encontrado ou não foi possível excluir.");
+            }
+        } catch (Exception e) {
+            // Captura qualquer outra exceção inesperada
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro inesperado ao excluir cliente: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return "redirect:/vendedor/clientes"; 
     }
 }

@@ -36,6 +36,8 @@
         </div>
     </div>
 </nav>
+<div th:if="${mensagemErro}" class="alert alert-danger" th:text="${mensagemErro}"></div>
+<div th:if="${mensagemSucesso}" class="alert alert-success" th:text="${mensagemSucesso}"></div>
 
 <div class="container mt-4">
     <h2 class="text-center mb-4">Lista de Usuários</h2>
