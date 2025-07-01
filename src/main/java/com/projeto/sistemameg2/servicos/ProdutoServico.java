@@ -5,6 +5,8 @@ import com.projeto.sistemameg2.modelos.Produto;
 import com.projeto.sistemameg2.modelos.Categoria;
 import com.projeto.sistemameg2.repositorios.ProdutoRepositorio;
 import com.projeto.sistemameg2.repositorios.CategoriaRepositorio;
+import com.projeto.sistemameg2.repositorios.ItemVendaRepositorio;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,8 +62,17 @@ public class ProdutoServico {
         });
     }
 
+     @Autowired
+    private ItemVendaRepositorio itemVendaRepositorio; // <<--- INJETE ESTE REPOSITÓRIO
+
     public boolean deletar(Long id) {
         if (produtoRepositorio.existsById(id)) {
+            // <<--- VERIFICAÇÃO PARA CHAVE ESTRANGEIRA ---
+            if (itemVendaRepositorio.existsByProdutoId(id)) { // Você precisará criar este método no ItemVendaRepositorio
+                throw new IllegalStateException("Produto não pode ser excluído: possui vendas associadas. Considere desativá-lo.");
+            }
+            // <<--- FIM DA VERIFICAÇÃO ---
+
             produtoRepositorio.deleteById(id);
             return true;
         }
@@ -76,4 +87,5 @@ public class ProdutoServico {
     public Optional<Produto> buscarPorCodigoBarras(String codigoBarras) {
         return produtoRepositorio.findByCodigoBarras(codigoBarras);
     }
+    
 }

@@ -27,6 +27,7 @@ public class ProdutoWebControle {
         model.addAttribute("produtos", produtos);
         return "admin/produtoslista"; // Retorna o nome do template Thymeleaf (localizado em src/main/resources/templates/admin/produtoslista.html)
     }
+    
 
     // Exibe o formulário para um novo produto
     @GetMapping("/novo")
@@ -64,12 +65,19 @@ public class ProdutoWebControle {
     }
 
     // Deleta um produto
-    @GetMapping("/deletar/{id}")
+        @GetMapping("/deletar/{id}")
     public String deletarProduto(@PathVariable Long id, RedirectAttributes attributes) {
-        if (produtoServico.deletar(id)) {
-            attributes.addFlashAttribute("mensagemSucesso", "Produto excluído com sucesso!");
-        } else {
-            attributes.addFlashAttribute("mensagemErro", "Erro ao excluir produto. Produto não encontrado!");
+        try {
+            if (produtoServico.deletar(id)) {
+                attributes.addFlashAttribute("mensagemSucesso", "Produto excluído com sucesso!");
+            } else {
+                attributes.addFlashAttribute("mensagemErro", "Erro ao excluir produto. Produto não encontrado!");
+            }
+        } catch (IllegalStateException e) { // Captura a exceção de regra de negócio
+            attributes.addFlashAttribute("mensagemErro", e.getMessage());
+        } catch (Exception e) { // Captura outras exceções inesperadas
+            attributes.addFlashAttribute("mensagemErro", "Ocorreu um erro inesperado ao excluir o produto.");
+            e.printStackTrace(); // Para depuração
         }
         return "redirect:/admin/produtos";
     }

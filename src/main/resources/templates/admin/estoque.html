@@ -1,65 +1,175 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Gerenciar Estoque (Simplificado)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Gerenciar Estoque - Meg Kids</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f8d7da;
-        }
-        .navbar {
-            background-color: #c2185b;
-        }
-        .nav-link, .navbar-brand {
-            color: white !important;
-        }
-        .btn-rosa {
-            background-color: #c2185b;
-            color: white;
-        }
-        .btn-rosa:hover {
-            background-color: #a0174a;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="/css/main-theme-desktop.css">
+    <link rel="stylesheet" media="screen and (max-width: 768px)" href="/css/main-theme-mobile.css">
+    <link rel="stylesheet" href="/css/responsivo.css">
+
+    
 </head>
 <body>
-<nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/admin/dashboard}">Painel do Gerente</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/admin/clientes}">Clientes</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/admin/produtos}">Produtos (Completo)</a></li> <li class="nav-item"><a class="nav-link" th:href="@{/admin/estoque}">Estoque</a></li> <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
 
-<div class="container mt-4">
-    <h2 class="text-center mb-4">Estoque Atual</h2>
-
-    <div class="mb-3 text-end">
-        <a class="btn btn-rosa" th:href="@{/admin/produtos/novo}">Novo Produto</a>
-    </div>
-
-    <table class="table table-striped table-bordered bg-white">
-        <thead class="table-dark">
-        <tr>
-            <th>Nome do Produto</th>
-            <th>Quantidade em Estoque</th>
-            <th>Ações</th> </tr>
-        </thead>
-        <tbody>
-        <tr th:each="prodEstoque : ${produtosEstoque}">
-            <td th:text="${prodEstoque.nome}"></td>
-            <td th:text="${prodEstoque.quantidadeEstoque}"></td>
-            <td>
-                <a class="btn btn-sm btn-primary" th:href="@{/admin/produtos/editar/{id}(id=${prodEstoque.id})}">Editar Quantidade</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<div class="sidebar">
+    <img th:src="@{/imagens/logomeg.jpeg}" alt="Logo Meg Kids" class="sidebar-logo">
+    <h4>Meg Kids</h4>
+    <nav class="sidebar-nav">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/dashboard}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/vendas}">
+                    <i class="fas fa-cash-register"></i> Gestão de Vendas
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/produtos}">
+                    <i class="fas fa-boxes"></i> Gerenciar Produtos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" th:href="@{/admin/estoque}">
+                    <i class="fas fa-warehouse"></i> Controle de Estoque
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/clientes}">
+                    <i class="fas fa-users"></i> Cadastro de Clientes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/movimentacoes}">
+                    <i class="fas fa-exchange-alt"></i> Movimentações
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/categorias}">
+                    <i class="fas fa-tags"></i> Categorias
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/usuarios}">
+                    <i class="fas fa-user-cog"></i> Gerenciar Usuários
+                </a>
+            </li>
+            <li class="nav-item mt-auto">
+                <a class="nav-link" th:href="@{/auth/logout}">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
+
+<div class="main-content">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light d-lg-none mobile-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/admin/dashboard}">Meg Kids</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/dashboard}">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/vendas}">
+                            <i class="fas fa-cash-register"></i> Gestão de Vendas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/produtos}">
+                            <i class="fas fa-boxes"></i> Gerenciar Produtos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/admin/estoque}">
+                            <i class="fas fa-warehouse"></i> Controle de Estoque
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/clientes}">
+                            <i class="fas fa-users"></i> Cadastro de Clientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/movimentacoes}">
+                            <i class="fas fa-exchange-alt"></i> Movimentações
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/categorias}">
+                            <i class="fas fa-tags"></i> Categorias
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/usuarios}">
+                            <i class="fas fa-user-cog"></i> Gerenciar Usuários
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/auth/logout}">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <h1 class="section-title">Controle de Estoque</h1>
+    <p class="lead text-center mb-5">Visualize e gerencie os produtos em estoque.</p>
+
+    <div class="d-flex justify-content-end mb-3">
+        <a class="btn btn-rosa" th:href="@{/admin/produtos/novo}">
+            <i class="fas fa-plus-circle me-2"></i> Novo Produto
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered bg-white">
+            <thead class="table-dark">
+            <tr>
+                <th>Nome do Produto</th>
+                <th>Quantidade em Estoque</th>
+                <th class="text-center">Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="prodEstoque : ${produtosEstoque}">
+                <td data-label="Nome do Produto" th:text="${prodEstoque.nome}"></td>
+                <td data-label="Quantidade em Estoque" th:text="${prodEstoque.quantidadeEstoque}"></td>
+                <td data-label="Ações" class="text-center">
+                    <a class="btn btn-sm btn-primary" th:href="@{/admin/produtos/editar/{id}(id=${prodEstoque.id})}">
+                        <i class="fas fa-edit me-1"></i> Editar Quantidade
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(produtosEstoque)}">
+                <td colspan="3" class="text-center">Nenhum produto em estoque encontrado.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Meg Kids. Todos os direitos reservados.</p>
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

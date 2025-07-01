@@ -1,0 +1,65 @@
+/* Sidebar fixa em telas grandes */
+.sidebar {
+    width: 240px;
+    position: fixed;
+    height: 100vh;
+    padding: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+/* Navbar móvel oculta em telas grandes */
+.mobile-navbar {
+    display: none;
+}
+
+/* Conteúdo principal com margem à esquerda para a sidebar */
+.main-content {
+    margin-left: 260px;
+    padding: 20px;
+}
+
+/* Ajustes para telas pequenas (celular, tablet) */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .mobile-navbar {
+        display: block;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    /* Tabela responsiva com data-label */
+    table thead {
+        display: none;
+    }
+
+    table tbody tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: #fff;
+    }
+
+    table tbody tr td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    table tbody tr td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #ff69b4;
+    }
+}

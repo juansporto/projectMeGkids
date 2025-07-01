@@ -22,7 +22,7 @@ public class Usuario {
 
     public enum TipoUsuario {
         GERENTE,
-        VENDEDOR, FUNCIONARIO
+        VENDEDOR, 
     }
 
 

@@ -2,78 +2,181 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Formulário de Usuário</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:text="${usuario.id != null} ? 'Editar Usuário - Meg Kids' : 'Novo Usuário - Meg Kids'">Formulário de Usuário - Meg Kids</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f8d7da; /* rosa salmão claro */
-        }
-        .navbar {
-            background-color: #c2185b; /* rosa forte */
-        }
-        .nav-link, .navbar-brand {
-            color: white !important;
-        }
-        .btn-rosa {
-            background-color: #c2185b;
-            color: white;
-        }
-        .btn-rosa:hover {
-            background-color: #a0174a;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/main-theme-desktop.css">
+    <link rel="stylesheet" media="screen and (max-width: 768px)" href="/css/main-theme-mobile.css">
+
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/admin/dashboard}">Painel do Gerente</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/admin/usuarios}">Usuários</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
-            </ul>
+<div class="sidebar">
+    <img th:src="@{/imagens/logomeg.jpeg}" alt="Logo Meg Kids" class="sidebar-logo">
+    <h4>Meg Kids</h4>
+    <nav class="sidebar-nav">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/dashboard}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/vendas}">
+                    <i class="fas fa-cash-register"></i> Gestão de Vendas
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/produtos}">
+                    <i class="fas fa-boxes"></i> Gerenciar Produtos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/estoque}">
+                    <i class="fas fa-warehouse"></i> Controle de Estoque
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/clientes}">
+                    <i class="fas fa-users"></i> Cadastro de Clientes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/movimentacoes}">
+                    <i class="fas fa-exchange-alt"></i> Movimentações
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/categorias}">
+                    <i class="fas fa-tags"></i> Categorias
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" th:href="@{/admin/usuarios}">
+                    <i class="fas fa-user-cog"></i> Gerenciar Usuários
+                </a>
+            </li>
+            <li class="nav-item mt-auto">
+                <a class="nav-link" th:href="@{/auth/logout}">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div class="main-content">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light d-lg-none mobile-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/admin/dashboard}">Meg Kids</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/dashboard}">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/vendas}">
+                            <i class="fas fa-cash-register"></i> Gestão de Vendas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/produtos}">
+                            <i class="fas fa-boxes"></i> Gerenciar Produtos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/estoque}">
+                            <i class="fas fa-warehouse"></i> Controle de Estoque
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/clientes}">
+                            <i class="fas fa-users"></i> Cadastro de Clientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/movimentacoes}">
+                            <i class="fas fa-exchange-alt"></i> Movimentações
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/categorias}">
+                            <i class="fas fa-tags"></i> Categorias
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/admin/usuarios}">
+                            <i class="fas fa-user-cog"></i> Gerenciar Usuários
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/auth/logout}">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
+    </nav>
+
+    <h1 class="section-title" th:text="${usuario.id != null} ? 'Editar Usuário' : 'Novo Usuário'"></h1>
+    <p class="lead text-center mb-5" th:text="${usuario.id != null} ? 'Atualize as informações do usuário.' : 'Crie uma nova conta de usuário para o sistema.'"></p>
+
+    <div class="card p-4 mx-auto" style="max-width: 600px; background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <form th:action="@{/admin/usuarios/salvar}" th:object="${usuario}" method="post">
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome Completo <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="nome" th:field="*{nome}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">E-mail <span class="text-danger">*</span></label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="senha" class="form-label">Senha <span th:if="${usuario.id == null}" class="text-danger">*</span></label>
+                <input type="password" class="form-control" id="senha" th:field="*{senha}" th:required="${usuario.id == null}">
+                <small th:if="${usuario.id != null}" class="form-text text-muted">Deixe em branco para manter a senha atual.</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo de Usuário <span class="text-danger">*</span></label>
+                <select class="form-select" id="tipo" th:field="*{tipo}" required>
+                    <option value="">Selecione um Tipo</option>
+                    <option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo}">TIPO</option>
+                </select>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="ativo" th:field="*{ativo}">
+                <label class="form-check-label" for="ativo">Usuário Ativo</label>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <a th:href="@{/admin/usuarios}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i> Voltar
+                </a>
+                <button type="submit" class="btn btn-rosa">
+                    <i class="fas fa-save me-2"></i> Salvar Usuário
+                </button>
+            </div>
+        </form>
     </div>
-</nav>
 
-<div class="container mt-4">
-    <h2 class="text-center mb-4">Formulário de Usuário</h2>
-
-    <form th:action="@{/admin/usuarios/salvar}" th:object="${usuario}" method="post" class="bg-white p-4 rounded shadow-sm">
-        <div class="mb-3">
-            <label for="nome" class="form-label">Nome</label>
-            <input type="text" class="form-control" id="nome" th:field="*{nome}" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="email" class="form-label">E-mail</label>
-            <input type="email" class="form-control" id="email" th:field="*{email}" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="senha" class="form-label">Senha</label>
-            <input type="password" class="form-control" id="senha" th:field="*{senha}" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="tipo" class="form-label">Tipo de Usuário</label>
-            <select class="form-select" id="tipo" th:field="*{tipo}">
-                <option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo}">TIPO</option>
-            </select>
-        </div>
-
-        <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" id="ativo" th:field="*{ativo}">
-            <label class="form-check-label" for="ativo">Ativo</label>
-        </div>
-
-        <div class="d-flex justify-content-between">
-            <a th:href="@{/admin/usuarios}" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="btn btn-rosa">Salvar</button>
-        </div>
-    </form>
+    <footer class="footer">
+        <p>&copy; 2025 Meg Kids. Todos os direitos reservados.</p>
+    </footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

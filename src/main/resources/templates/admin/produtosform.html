@@ -1,70 +1,138 @@
-<!-- produto-formulario.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${produto.id != null} ? 'Editar Produto' : 'Novo Produto'">Produto</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:text="${produto.id != null} ? 'Editar Produto - Meg Kids' : 'Novo Produto - Meg Kids'">Produto</title>
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <link rel="stylesheet" href="/css/main-theme-desktop.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <link rel="stylesheet" href="/css/responsivo.css">
+</head>
 </head>
 <body>
 
-<div class="container-fluid mt-4 px-3 px-md-5">
-    <h2 class="text-center mb-4" th:text="${produto.id != null} ? 'Editar Produto' : 'Novo Produto'"></h2>
-
-    <form th:action="@{/admin/produtos/salvar}" th:object="${produto}" method="post" class="bg-white p-4 rounded shadow-sm">
-        <input type="hidden" th:field="*{id}" />
-
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label class="form-label">Nome</label>
-                <input type="text" th:field="*{nome}" class="form-control" required>
-            </div>
-
-            <div class="col-md-6">
-                <label class="form-label">Código de Barras</label>
-                <input type="text" th:field="*{codigoBarras}" class="form-control">
-            </div>
-
-            <div class="col-12">
-                <label class="form-label">Descrição</label>
-                <textarea th:field="*{descricao}" class="form-control" rows="3"></textarea>
-            </div>
-
-            <div class="col-md-6">
-                <label class="form-label">Preço</label>
-                <input type="number" step="0.01" th:field="*{preco}" class="form-control" required>
-            </div>
-
-            <div class="col-md-6">
-                <label class="form-label">Quantidade em Estoque</label>
-                <input type="number" th:field="*{quantidadeEstoque}" class="form-control" required>
-            </div>
-
-            <div class="col-md-6">
-                <label class="form-label">Categoria</label>
-                <select th:field="*{categoria.id}" class="form-select" required>
-                    <option value="">Selecione uma categoria</option>
-                    <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nome}"></option>
-                </select>
-            </div>
-
-            <div class="col-md-6 d-flex align-items-center">
-                <div class="form-check mt-4">
-                    <input type="checkbox" th:field="*{status}" class="form-check-input" id="status">
-                    <label class="form-check-label" for="status">Ativo</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-4 text-center">
-            <button type="submit" class="btn btn-rosa">Salvar</button>
-            <a th:href="@{/admin/produtos}" class="btn btn-secondary ms-2">Cancelar</a>
-        </div>
-    </form>
+<div class="sidebar">
+    <img th:src="@{/imagens/logomeg.jpeg}" alt="Logo Meg Kids" class="sidebar-logo">
+    <h4>Meg Kids</h4>
+    <nav class="sidebar-nav">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/dashboard}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/vendas}">
+                    <i class="fas fa-cash-register"></i> Gestão de Vendas
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" th:href="@{/admin/produtos}"> <i class="fas fa-boxes"></i> Gerenciar Produtos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/estoque}">
+                    <i class="fas fa-warehouse"></i> Controle de Estoque
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/clientes}">
+                    <i class="fas fa-users"></i> Cadastro de Clientes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/movimentacoes}">
+                    <i class="fas fa-exchange-alt"></i> Movimentações
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/categorias}">
+                    <i class="fas fa-tags"></i> Categorias
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/usuarios}">
+                    <i class="fas fa-user-cog"></i> Gerenciar Usuários
+                </a>
+            </li>
+            <li class="nav-item mt-auto">
+                <a class="nav-link" th:href="@{/auth/logout}">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
+<div class="main-content">
+    <h1 class="section-title" th:text="${produto.id != null} ? 'Editar Produto' : 'Novo Produto'"></h1>
+    <p class="lead text-center mb-5" style="color: var(--text-medium);">
+        Preencha os campos para cadastrar um novo produto ou atualizar um existente.
+    </p>
+
+    <div class="card p-4 mb-5"> <h4 class="mb-4" style="color: var(--dark-pink); font-weight: 600;"
+            th:text="${produto.id != null} ? 'Dados do Produto' : 'Detalhes do Novo Produto'"></h4>
+
+        <form th:action="@{/admin/produtos/salvar}" th:object="${produto}" method="post">
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" th:field="*{nome}" id="nome" class="form-control" required autofocus> </div>
+
+                <div class="col-md-6">
+                    <label for="codigoBarras" class="form-label">Código de Barras</label>
+                    <input type="text" th:field="*{codigoBarras}" id="codigoBarras" class="form-control">
+                </div>
+
+                <div class="col-12">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <textarea th:field="*{descricao}" id="descricao" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="preco" class="form-label">Preço</label>
+                    <input type="number" step="0.01" th:field="*{preco}" id="preco" class="form-control" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="quantidadeEstoque" class="form-label">Quantidade em Estoque</label>
+                    <input type="number" th:field="*{quantidadeEstoque}" id="quantidadeEstoque" class="form-control" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="categoria" class="form-label">Categoria</label>
+                    <select th:field="*{categoria.id}" id="categoria" class="form-select" required>
+                        <option value="">Selecione uma categoria</option>
+                        <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nome}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="form-check mt-4">
+                        <input type="checkbox" th:field="*{status}" class="form-check-input" id="status">
+                        <label class="form-check-label" for="status">Ativo</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-end"> <button type="submit" class="btn btn-rosa btn-lg">
+                    <i class="fas fa-save"></i> Salvar Produto
+                </button>
+                <a th:href="@{/admin/produtos}" class="btn btn-secondary btn-lg ms-2">
+                    <i class="fas fa-times-circle"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div> <footer class="footer mt-5">
+        <p class="text-center">&copy; 2025 Meg Kids. Todos os direitos reservados.</p>
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
