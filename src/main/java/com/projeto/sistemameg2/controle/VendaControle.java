@@ -1,7 +1,8 @@
 package com.projeto.sistemameg2.controle;
 
 import com.projeto.sistemameg2.dto.VendaDTO; // Importar o DTO
-import com.projeto.sistemameg2.dto.VendaMensalDTO;
+import com.projeto.sistemameg2.dto.VendaDiariaDTO;
+
 // import com.projeto.sistemameg2.modelos.Venda; // Não precisa importar a entidade Venda aqui se você só trabalha com DTOs
 import com.projeto.sistemameg2.servicos.VendaServico;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,10 @@ public class VendaControle {
     
     // Obter dados para o gráfico diário (GET /api/vendas/grafico-diario)
     @GetMapping("/grafico-diario")
-    public List<VendaMensalDTO> obterDadosGraficoDiario() {
-        return vendaServico.obterTotaisPorDia();
-    }
+public List<VendaDiariaDTO> obterDadosGraficoDiario() {
+    return vendaServico.obterTotaisVendasDiariasSemana();
+}
+
 
     // Salvar uma nova venda (POST /api/vendas)
     @PostMapping

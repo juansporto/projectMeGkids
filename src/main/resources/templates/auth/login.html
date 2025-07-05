@@ -3,53 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - MEG Kids</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap e FontAwesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Tema Principal -->
+    <link rel="stylesheet" href="/css/main-theme-desktop.css">
 
     <style>
         body {
             background-color: #f8d7da;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         .navbar {
             background-color: #c2185b;
         }
-        .nav-link, .navbar-brand {
+        .navbar-brand {
             color: white !important;
+            font-weight: bold;
+        }
+        .btn-rosa {
+            background-color: #c2185b;
+            color: white;
+            border: none;
+        }
+        .btn-rosa:hover {
+            background-color: #a3154c;
+        }
+        .login-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            margin: auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+        }
+        .footer {
+            margin-top: auto;
+            background-color: #fff;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 1.5rem;
+                margin: 2rem 1rem;
+            }
         }
     </style>
 </head>
 <body>
+
+<!-- Navbar -->
 <nav class="navbar">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">MEG Kids</a>
+        <a class="navbar-brand mx-auto" href="#">MEG Kids</a>
     </div>
 </nav>
 
-<main class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 bg-white p-4 rounded shadow">
-            <h2 class="mb-4 text-center">Login no Sistema</h2>
+<!-- Formulário de Login -->
+<main class="container d-flex flex-column align-items-center justify-content-center py-5">
+    <div class="login-container">
+        <h2 class="text-center mb-4" style="color: #c2185b;">Acesso ao Sistema</h2>
 
-            <form th:action="@{/auth/login}" method="post">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Email:</label>
-                    <input type="email" id="username" name="username" class="form-control" required>
-                </div>
+        <form th:action="@{/auth/login}" method="post">
+            <div class="mb-3">
+                <label for="username" class="form-label">Email</label>
+                <input type="email" id="username" name="username" class="form-control" placeholder="usuario@exemplo.com" required>
+            </div>
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">Senha:</label>
-                    <input type="password" id="password" name="password" class="form-control" required>
-                </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Senha</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
 
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Entrar</button>
-                </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-rosa btn-lg">
+                    <i class="fas fa-sign-in-alt me-2"></i> Entrar
+                </button>
+            </div>
 
-                <div th:if="${param.erro}" class="mt-3 text-danger text-center">Email ou senha inválidos.</div>
-                <div th:if="${param.logout}" class="mt-3 text-success text-center">Logout realizado com sucesso.</div>
-            </form>
-        </div>
+            <div th:if="${param.erro}" class="mt-3 alert alert-danger text-center">
+                Email ou senha inválidos.
+            </div>
+            <div th:if="${param.logout}" class="mt-3 alert alert-success text-center">
+                Logout realizado com sucesso.
+            </div>
+        </form>
     </div>
 </main>
+
+<!-- Rodapé -->
+<footer class="footer">
+    &copy; 2025 Meg Kids. Desenvolvido por <strong>Portotech</strong>.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

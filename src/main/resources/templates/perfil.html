@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Meu Perfil - Meg Kids</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/main-theme-desktop.css">
+</head>
+<body>
+
+<!-- Sidebar (Reutilize a mesma sidebar de seus outros painéis) -->
+<div class="sidebar">
+    <img th:src="@{/imagens/logomeg.jpeg}" alt="Logo Meg Kids" class="sidebar-logo">
+    <h4>Meg Kids</h4>
+    <nav class="sidebar-nav">
+        <ul class="nav flex-column">
+            <!-- Exemplo: Condicionalmente mostrar links de gerente ou vendedor -->
+            <li class="nav-item" th:if="${#authorization.expression('hasRole(''GERENTE'')')}">
+                <a class="nav-link" th:href="@{/admin/dashboard}">
+                    <i class="fas fa-home"></i> Dashboard Gerente
+                </a>
+            </li>
+            <li class="nav-item" th:if="${#authorization.expression('hasRole(''VENDEDOR'')')}">
+                <a class="nav-link" th:href="@{/vendedor/dashboard}">
+                    <i class="fas fa-home"></i> Dashboard Vendedor
+                </a>
+            </li>
+            <!-- ... outros links de navegação adaptados ao perfil ... -->
+            
+            <li class="nav-item">
+                <a class="nav-link active" th:href="@{/perfil}"> <!-- Link de perfil ativo nesta página -->
+                    <i class="fas fa-user-circle"></i> Meu Perfil
+                </a>
+            </li>
+
+            <li class="nav-item mt-auto">
+                <a class="nav-link" th:href="@{/auth/logout}">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Conteúdo principal do Perfil -->
+<div class="main-content">
+    <h1 class="section-title">Meu Perfil</h1>
+    <p class="lead text-center mb-5" style="color: var(--text-medium);">
+        Visualize e atualize suas informações pessoais.
+    </p>
+
+    <!-- Mensagens de Sucesso/Erro (se houver) -->
+    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensagemSucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${mensagemErro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card p-4 mb-5">
+        <h4 class="mb-4" style="color: var(--dark-pink); font-weight: 600;">Dados do Usuário</h4>
+
+        <form th:action="@{/perfil/salvar}" th:object="${usuario}" method="post">
+            <input type="hidden" th:field="*{id}" /> <!-- Esconda o ID, mas envie-o -->
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="nome" class="form-label">Nome Completo</label>
+                    <input type="text" th:field="*{nome}" id="nome" class="form-control" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" th:field="*{email}" id="email" class="form-control" readonly>
+                    <small class="form-text text-muted">O email não pode ser alterado diretamente.</small>
+                </div>
+              
+                <div class="col-md-6">
+                    <label class="form-label">Tipo de Usuário</label>
+                    <input type="text" th:value="${usuario.tipo}" class="form-control" readonly>
+                </div>
+            </div>
+
+            <div class="mt-4 text-end">
+                <a class="btn btn-danger btn-lg" th:href="@{/auth/logout}">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+           
+        </form>
+    </div>
+
+
+    <!-- Rodapé -->
+    <footer class="footer mt-5">
+        <p class="text-center">&copy; 2025 Meg Kids. Todos os direitos reservados.</p>
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Adicione scripts JS adicionais aqui, se necessário (ex: validação de formulário) -->
+</body>
+</html>

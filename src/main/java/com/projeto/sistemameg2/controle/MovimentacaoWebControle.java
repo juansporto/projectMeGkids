@@ -4,8 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Controller // <--- Este é um controlador para HTML
-@RequestMapping("/admin/movimentacoes") // <--- Esta é a URL para a página HTML
+@Controller
+@RequestMapping("/admin/movimentacoes") // Esta é a URL para a página HTML no painel de admin
 public class MovimentacaoWebControle {
 
     @GetMapping

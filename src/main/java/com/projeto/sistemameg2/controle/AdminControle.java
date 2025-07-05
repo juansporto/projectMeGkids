@@ -12,6 +12,10 @@ public class AdminControle {
     public String dashboardGerente() {
         return "admin/dashboard";  // página principal do admin
     }
+     @GetMapping("/relatorios")
+    public String relatoriosPage() {
+        return "admin/relatorios"; // Retorna o nome do template HTML
+    }
 
     // Aqui só o que for geral para admin, nada de listar entidades específicas
 }

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Relatórios - Meg Kids</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/main-theme-desktop.css">
+    <link rel="stylesheet" media="screen and (max-width: 768px)" href="/css/main-theme-mobile.css">
+    <link rel="stylesheet" href="/css/responsivo.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+</head>
+<body>
+
+<div class="sidebar">
+    <img th:src="@{/imagens/logomeg.jpeg}" alt="Logo Meg Kids" class="sidebar-logo">
+    <h4>Meg Kids</h4>
+    <nav class="sidebar-nav">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link " th:href="@{/admin/dashboard}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/vendas}">
+                    <i class="fas fa-cash-register"></i> Vendas
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/produtos}">
+                    <i class="fas fa-boxes"></i>  Produtos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/estoque}">
+                    <i class="fas fa-warehouse"></i> Estoque
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/clientes}">
+                    <i class="fas fa-users"></i> Clientes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/movimentacoes}">
+                    <i class="fas fa-exchange-alt"></i> Movimentações
+                </a>
+            </li>
+            <li>
+                <a class="nav-link active " th:href="@{/admin/relatorios}">
+                    <i class="fas fa-chart-line"></i> Relatórios
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/categorias}">
+                    <i class="fas fa-tags"></i> Categorias
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/usuarios}">
+                    <i class="fas fa-user-cog"></i>  Usuários
+                </a>
+            </li>
+          <li class="nav-item">
+                <a class="nav-link" th:href="@{/perfil}">
+                    <i class="fas fa-user"></i> Meu Perfil
+                </a>  
+            <li class="nav-item mt-auto">
+                <a class="nav-link" th:href="@{/auth/logout}">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div class="main-content">
+    <h1 class="section-title">Gestão de Relatórios - MeG KIDS</h1>
+    <p class="lead text-center mb-5">Gere e visualize relatórios do sistema</p>
+
+    <div class="form-section rounded-lg shadow-md p-6 bg-white">
+        <h5 class="text-center mb-4 text-gray-800 font-semibold">Gerar Novo Relatório</h5>
+        <form id="gerarRelatorioForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="mb-3">
+                <label for="tipoRelatorio" class="form-label text-gray-700">Tipo de Relatório:</label>
+                <select class="form-select rounded-md border-gray-300 focus:ring-pink-500 focus:border-pink-500" id="tipoRelatorio" name="tipoRelatorio" required>
+                    <option value="">Selecione o Tipo</option>
+                    <option value="MOVIMENTACOES_POR_PERIODO">Movimentações por Período</option>
+                    </select>
+            </div>
+            <div class="mb-3">
+                <label for="periodoInicial" class="form-label text-gray-700">Período Inicial:</label>
+                <input type="datetime-local" class="form-control rounded-md border-gray-300 focus:ring-pink-500 focus:border-pink-500" id="periodoInicial" name="periodoInicial" required>
+            </div>
+            <div class="mb-3">
+                <label for="periodoFinal" class="form-label text-gray-700">Período Final:</label>
+                <input type="datetime-local" class="form-control rounded-md border-gray-300 focus:ring-pink-500 focus:border-pink-500" id="periodoFinal" name="periodoFinal" required>
+            </div>
+            <div class="mb-3">
+                <label for="usuarioId" class="form-label text-gray-700">ID do Usuário (Gerador):</label>
+                <input type="number" class="form-control rounded-md border-gray-300 focus:ring-pink-500 focus:border-pink-500" id="usuarioId" name="usuarioId" required>
+                <small class="form-text text-gray-500">Insira o ID do usuário que está gerando o relatório.</small>
+            </div>
+            <div class="col-span-1 md:col-span-2 text-center">
+                <button type="submit" class="btn bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                    <i class="fas fa-play-circle mr-2"></i> Gerar Relatório
+                </button>
+            </div>
+        </form>
+        <div id="gerarRelatorioMessage" class="mt-4 text-center"></div>
+    </div>
+
+    <div class="reports-list-section rounded-lg shadow-md p-6 bg-white">
+        <h5 class="text-center mb-4 text-gray-800 font-semibold">Relatórios Gerados</h5>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover rounded-lg overflow-hidden">
+                <thead class="bg-pink-500 text-white">
+                    <tr>
+                        <th scope="col" class="px-4 py-2">ID</th>
+                        <th scope="col" class="px-4 py-2">Nome</th>
+                        <th scope="col" class="px-4 py-2">Tipo</th>
+                        <th scope="col" class="px-4 py-2">Data Geração</th>
+                        <th scope="col" class="px-4 py-2">Período</th>
+                        <th scope="col" class="px-4 py-2">Status</th>
+                        <th scope="col" class="px-4 py-2">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="relatoriosTableBody">
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-gray-500">Carregando relatórios...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="relatoriosListMessage" class="mt-4 text-center"></div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Meg Kids. Todos os direitos reservados.</p>
+    </footer>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const gerarRelatorioForm = document.getElementById('gerarRelatorioForm');
+        const gerarRelatorioMessage = document.getElementById('gerarRelatorioMessage');
+        const relatoriosTableBody = document.getElementById('relatoriosTableBody');
+        const relatoriosListMessage = document.getElementById('relatoriosListMessage');
+
+        // Função para carregar e exibir os relatórios
+        async function carregarRelatorios() {
+            relatoriosTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-gray-500">Carregando relatórios...</td></tr>';
+            try {
+                const response = await fetch('/relatorios');
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar relatórios.');
+                }
+                const relatorios = await response.json();
+
+                relatoriosTableBody.innerHTML = ''; // Limpa o conteúdo atual
+
+                if (relatorios.length === 0) {
+                    relatoriosTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-gray-500">Nenhum relatório encontrado.</td></tr>';
+                    return;
+                }
+
+                relatorios.forEach(relatorio => {
+                    const row = relatoriosTableBody.insertRow();
+                    row.insertCell(0).textContent = relatorio.id;
+                    row.insertCell(1).textContent = relatorio.nomeRelatorio;
+                    row.insertCell(2).textContent = relatorio.tipoRelatorio;
+                    row.insertCell(3).textContent = relatorio.dataGeracao;
+                    row.insertCell(4).textContent = `${relatorio.periodoInicial || ''} - ${relatorio.periodoFinal || ''}`;
+                    row.insertCell(5).textContent = relatorio.status;
+
+                    const acoesCell = row.insertCell(6);
+                    // Botão para visualizar detalhes ou baixar PDF
+                    const viewButton = document.createElement('button');
+                    viewButton.className = 'btn btn-sm bg-blue-500 hover:bg-blue-600 text-white rounded-md mr-2';
+                    viewButton.innerHTML = '<i class="fas fa-eye"></i> Visualizar';
+                    
+                    // --- ALTERAÇÃO AQUI ---
+                    viewButton.onclick = () => {
+                        // Abre o PDF em uma nova aba para visualização/download
+                        window.open(`/relatorios/${relatorio.id}/pdf`, '_blank');
+                    };
+                    // --- FIM DA ALTERAÇÃO ---
+
+                    acoesCell.appendChild(viewButton);
+
+                    // Botão para deletar
+                    const deleteButton = document.createElement('button');
+                    deleteButton.className = 'btn btn-sm bg-red-500 hover:bg-red-600 text-white rounded-md';
+                    deleteButton.innerHTML = '<i class="fas fa-trash"></i> Deletar';
+                    deleteButton.onclick = async () => {
+                        if (confirm('Tem certeza que deseja deletar o relatório ID: ' + relatorio.id + '?')) {
+                            try {
+                                const deleteResponse = await fetch(`/relatorios/${relatorio.id}`, {
+                                    method: 'DELETE'
+                                });
+                                if (deleteResponse.ok) {
+                                    alert('Relatório deletado com sucesso!');
+                                    carregarRelatorios(); // Recarrega a lista
+                                } else {
+                                    throw new Error('Erro ao deletar relatório.');
+                                }
+                            } catch (error) {
+                                alert('Erro ao deletar relatório: ' + error.message);
+                                console.error('Erro ao deletar relatório:', error);
+                            }
+                        }
+                    };
+                    acoesCell.appendChild(deleteButton);
+                });
+            } catch (error) {
+                relatoriosTableBody.innerHTML = '<tr><td colspan="7" class="text-center text-red-500 py-4">Erro ao carregar relatórios.</td></tr>';
+                console.error('Erro ao carregar relatórios:', error);
+            }
+        }
+
+        // Event listener para o formulário de geração de relatório
+        gerarRelatorioForm.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+
+            const tipoRelatorio = document.getElementById('tipoRelatorio').value;
+            const periodoInicial = document.getElementById('periodoInicial').value;
+            const periodoFinal = document.getElementById('periodoFinal').value;
+            const usuarioId = document.getElementById('usuarioId').value;
+
+            // Validação básica
+            if (!tipoRelatorio || !periodoInicial || !periodoFinal || !usuarioId) {
+                gerarRelatorioMessage.className = 'text-red-500';
+                gerarRelatorioMessage.textContent = 'Por favor, preencha todos os campos.';
+                return;
+            }
+
+            // Mapeia o tipo de relatório para o endpoint correto
+            let endpoint = '';
+            if (tipoRelatorio === 'MOVIMENTACOES_POR_PERIODO') {
+                endpoint = '/relatorios/gerar/movimentacoes-por-periodo';
+            } else {
+                gerarRelatorioMessage.className = 'text-red-500';
+                gerarRelatorioMessage.textContent = 'Tipo de relatório não suportado para geração.';
+                return;
+            }
+
+            try {
+                gerarRelatorioMessage.className = 'text-blue-500';
+                gerarRelatorioMessage.textContent = 'Gerando relatório...';
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        inicio: periodoInicial + ":00", // Adiciona segundos para formato LocalDateTime
+                        fim: periodoFinal + ":00",      // Adiciona segundos para formato LocalDateTime
+                        usuarioId: usuarioId
+                    })
+                });
+
+                if (response.ok) {
+                    const novoRelatorio = await response.json();
+                    gerarRelatorioMessage.className = 'text-green-500';
+                    gerarRelatorioMessage.textContent = `Relatório "${novoRelatorio.nomeRelatorio}" (ID: ${novoRelatorio.id}) gerado com sucesso!`;
+                    gerarRelatorioForm.reset(); // Limpa o formulário
+                    carregarRelatorios(); // Recarrega a lista de relatórios
+                } else {
+                    const errorData = await response.text();
+                    throw new Error(errorData || 'Erro desconhecido ao gerar relatório.');
+                }
+            } catch (error) {
+                gerarRelatorioMessage.className = 'text-red-500';
+                gerarRelatorioMessage.textContent = `Erro ao gerar relatório: ${error.message}`;
+                console.error('Erro ao gerar relatório:', error);
+            }
+        });
+
+        // Carrega os relatórios ao carregar a página
+        carregarRelatorios();
+    });
+</script>
+</body>
+</html>

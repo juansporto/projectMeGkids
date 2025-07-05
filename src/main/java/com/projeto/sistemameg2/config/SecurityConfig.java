@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/api/auth/**", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/api/vendas/grafico-diario").permitAll() // libera acesso público
                         .requestMatchers(
                                 "/admin/clientes",
                                 "/admin/clientes/**"
@@ -87,5 +88,7 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+    // Regra de acesso público para "/api/vendas/grafico-diario" já adicionada no filterChain abaixo
+}
+
 }

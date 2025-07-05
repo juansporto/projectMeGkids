@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link rel="stylesheet" href="/css/main-theme-desktop.css">
-     <link rel="stylesheet" href="/css/responsivo.css">
+    <link rel="stylesheet" href="/css/responsivo.css">
 
 </head>
 <body>
@@ -20,33 +20,38 @@
     <nav class="sidebar-nav">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/admin/dashboard}">
+                <a class="nav-link " th:href="@{/admin/dashboard}">
                     <i class="fas fa-home"></i> Dashboard
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/admin/vendas}">
-                    <i class="fas fa-cash-register"></i> Gestão de Vendas
+                    <i class="fas fa-cash-register"></i> Vendas
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/admin/produtos}">
-                    <i class="fas fa-boxes"></i> Gerenciar Produtos
+                    <i class="fas fa-boxes"></i>  Produtos
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/admin/estoque}">
-                    <i class="fas fa-warehouse"></i> Controle de Estoque
+                    <i class="fas fa-warehouse"></i> Estoque
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/admin/clientes}">
-                    <i class="fas fa-users"></i> Cadastro de Clientes
+                    <i class="fas fa-users"></i> Clientes
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/admin/movimentacoes}">
                     <i class="fas fa-exchange-alt"></i> Movimentações
+                </a>
+            </li>
+            <li>
+                <a class="nav-link " th:href="@{/admin/relatorios}">
+                    <i class="fas fa-chart-line"></i> Relatórios
                 </a>
             </li>
             <li class="nav-item">
@@ -56,8 +61,13 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/admin/usuarios}">
-                    <i class="fas fa-user-cog"></i> Gerenciar Usuários
+                    <i class="fas fa-user-cog"></i>  Usuários
                 </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/perfil}">
+                    <i class="fas fa-user"></i> Meu Perfil
+                </a>  
             </li>
             <li class="nav-item mt-auto">
                 <a class="nav-link" th:href="@{/auth/logout}">
@@ -142,8 +152,7 @@
             <tr>
                 <th>ID</th>
                 <th>Nome</th>
-                <th class="text-center">Ações</th>
-            </tr>
+                <th class="text-center">Ações</th> </tr>
             </thead>
             <tbody>
             <tr th:each="categoria : ${categorias}">

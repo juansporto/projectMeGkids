@@ -21,34 +21,39 @@
     <h4>Meg Kids</h4>
     <nav class="sidebar-nav">
         <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/admin/dashboard}">
+             <li class="nav-item">
+                <a class="nav-link " th:href="@{/admin/dashboard}">
                     <i class="fas fa-home"></i> Dashboard
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/admin/vendas}">
-                    <i class="fas fa-cash-register"></i> Gestão de Vendas
+                    <i class="fas fa-cash-register"></i> Vendas
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/admin/produtos}">
-                    <i class="fas fa-boxes"></i> Gerenciar Produtos
+                    <i class="fas fa-boxes"></i>  Produtos
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" th:href="@{/admin/estoque}">
-                    <i class="fas fa-warehouse"></i> Controle de Estoque
+                    <i class="fas fa-warehouse"></i> Estoque
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/admin/clientes}">
-                    <i class="fas fa-users"></i> Cadastro de Clientes
+                    <i class="fas fa-users"></i> Clientes
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/admin/movimentacoes}">
                     <i class="fas fa-exchange-alt"></i> Movimentações
+                </a>
+            </li>
+            <li>
+                <a class="nav-link " th:href="@{/admin/relatorios}">
+                    <i class="fas fa-chart-line"></i> Relatórios
                 </a>
             </li>
             <li class="nav-item">
@@ -58,9 +63,13 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/admin/usuarios}">
-                    <i class="fas fa-user-cog"></i> Gerenciar Usuários
+                    <i class="fas fa-user-cog"></i>  Usuários
                 </a>
             </li>
+          <li class="nav-item">
+                <a class="nav-link" th:href="@{/perfil}">
+                    <i class="fas fa-user"></i> Meu Perfil
+                </a>  
             <li class="nav-item mt-auto">
                 <a class="nav-link" th:href="@{/auth/logout}">
                     <i class="fas fa-sign-out-alt"></i> Sair

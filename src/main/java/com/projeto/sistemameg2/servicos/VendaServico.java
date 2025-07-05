@@ -2,26 +2,20 @@ package com.projeto.sistemameg2.servicos;
 
 import com.projeto.sistemameg2.dto.ItemVendaDTO;
 import com.projeto.sistemameg2.dto.VendaDTO;
-import com.projeto.sistemameg2.dto.VendaMensalDTO;
-import com.projeto.sistemameg2.modelos.Cliente;
-import com.projeto.sistemameg2.modelos.Produto;
-import com.projeto.sistemameg2.modelos.Venda;
-import com.projeto.sistemameg2.modelos.ItemVenda; // Se você tiver uma entidade ItemVenda
-import com.projeto.sistemameg2.modelos.Usuario; // Se o usuário que registrou a venda for usado
-import com.projeto.sistemameg2.repositorios.ClienteRepositorio;
-import com.projeto.sistemameg2.repositorios.ProdutoRepositorio;
-import com.projeto.sistemameg2.repositorios.VendaRepositorio;
-import com.projeto.sistemameg2.repositorios.UsuarioRepositorio; // Para buscar o usuário pelo ID
+import com.projeto.sistemameg2.dto.VendaDiariaDTO;
+import com.projeto.sistemameg2.dto.MovimentacaoEstoqueDTO;
+import com.projeto.sistemameg2.modelos.*;
+import com.projeto.sistemameg2.repositorios.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; // Para garantir transação completa
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
+import java.time.temporal.TemporalAdjusters;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,22 +28,23 @@ public class VendaServico {
     @Autowired
     private ProdutoRepositorio produtoRepositorio;
     @Autowired
-    private UsuarioRepositorio usuarioRepositorio; // Para buscar o usuário que registrou a venda
+    private UsuarioRepositorio usuarioRepositorio;
+    @Autowired
+    private MovimentacaoEstoqueServico movimentacaoEstoqueServico;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+    private final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("dd/MM");
 
-    // Método para mapear Entidade para DTO
     private VendaDTO toDTO(Venda venda) {
         VendaDTO dto = new VendaDTO();
         dto.setId(venda.getId());
-        dto.setClienteId(venda.getCliente().getId()); // Assume que Cliente não é nulo
-        dto.setUsuarioId(venda.getUsuario().getId()); // Assume que Usuario não é nulo
+        dto.setClienteId(venda.getCliente().getId());
+        dto.setUsuarioId(venda.getUsuario().getId());
         dto.setFormaPagamento(venda.getFormaPagamento());
         dto.setValorTotal(venda.getValorTotal());
         dto.setDataVenda(venda.getDataVenda().format(formatter));
 
-        // Mapear itens da venda para ItemVendaDTO
-        List<ItemVendaDTO> itemDTOs = venda.getItensVenda().stream().map(item -> {
+        List<ItemVendaDTO> itensDto = venda.getItensVenda().stream().map(item -> {
             ItemVendaDTO itemDto = new ItemVendaDTO();
             itemDto.setProdutoId(item.getProduto().getId());
             itemDto.setNomeProduto(item.getProduto().getNome());
@@ -58,38 +53,60 @@ public class VendaServico {
             itemDto.setSubTotal(item.getSubTotal());
             return itemDto;
         }).collect(Collectors.toList());
-        dto.setItens(itemDTOs);
+        dto.setItens(itensDto);
 
         return dto;
     }
 
-    // Método para listar todas as vendas, retornando DTOs
     public List<VendaDTO> listarTodos() {
         return vendaRepositorio.findAll().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-    // Método para buscar venda por ID, retornando DTO
     public Optional<VendaDTO> buscarPorId(Long id) {
         return vendaRepositorio.findById(id).map(this::toDTO);
     }
-    
-    // Método para obter totais de vendas por dia para o gráfico
-    public List<VendaMensalDTO> obterTotaisPorDia() {
-        // Implemente a lógica aqui para buscar os dados do banco e mapear para VendaMensalDTO
-        // Isso geralmente envolve uma query JPQL ou nativa para agrupar por data
-        // Exemplo:
-        // List<Object[]> resultados = vendaRepositorio.sumVendasByDate();
-        // return resultados.stream()
-        //     .map(row -> new VendaMensalDTO((String) row[0], (Double) row[1])) // Assumindo tipo de retorno
-        //     .collect(Collectors.toList());
-        return List.of(); // Placeholder, implemente a lógica real
+
+    public List<VendaDiariaDTO> obterTotaisVendasDiariasSemana() {
+        LocalDateTime agora = LocalDateTime.now();
+
+        LocalDateTime inicioSemana = agora.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+                                         .toLocalDate().atStartOfDay();
+        LocalDateTime fimSemana = agora.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
+                                        .toLocalDate().atTime(23, 59, 59);
+
+        List<Object[]> resultados = vendaRepositorio.sumVendasByDay(inicioSemana, fimSemana);
+
+        Map<String, BigDecimal> vendasPorDia = new LinkedHashMap<>();
+        LocalDate dataIteracao = inicioSemana.toLocalDate();
+        while (!dataIteracao.isAfter(fimSemana.toLocalDate())) {
+            vendasPorDia.put(dataIteracao.format(dayFormatter), BigDecimal.ZERO);
+            dataIteracao = dataIteracao.plusDays(1);
+        }
+
+        for (Object[] row : resultados) {
+            String dia = (String) row[0];
+            BigDecimal total = (BigDecimal) row[1];
+            if (total != null) {
+                vendasPorDia.put(dia, total);
+            }
+        }
+
+        List<VendaDiariaDTO> listaOrdenada = vendasPorDia.entrySet().stream()
+                .map(entry -> new VendaDiariaDTO(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparing(VendaDiariaDTO::getDia, (d1, d2) -> {
+                    LocalDate data1 = LocalDate.parse(d1 + "/" + LocalDate.now().getYear(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    LocalDate data2 = LocalDate.parse(d2 + "/" + LocalDate.now().getYear(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    return data1.compareTo(data2);
+                }))
+                .collect(Collectors.toList());
+
+        return listaOrdenada;
     }
 
-    @Transactional // Garante que a transação seja completa (salvar venda e atualizar estoque)
+    @Transactional
     public VendaDTO salvar(VendaDTO vendaDTO) {
-        // 1. Validar cliente e usuário
         Cliente cliente = clienteRepositorio.findById(vendaDTO.getClienteId())
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
         Usuario usuario = usuarioRepositorio.findById(vendaDTO.getUsuarioId())
@@ -97,15 +114,13 @@ public class VendaServico {
 
         Venda venda = new Venda();
         venda.setCliente(cliente);
-        venda.setUsuario(usuario); // Setar o usuário que registrou a venda
+        venda.setUsuario(usuario);
         venda.setFormaPagamento(vendaDTO.getFormaPagamento());
-        venda.setDataVenda(LocalDateTime.now()); // Data gerada no backend
+        venda.setDataVenda(LocalDateTime.now());
 
         BigDecimal valorTotalCalculado = BigDecimal.ZERO;
-        // Lista para armazenar os itens da venda (entidades)
-        List<ItemVenda> itensVenda = new java.util.ArrayList<>();
+        List<ItemVenda> itensVenda = new ArrayList<>();
 
-        // 2. Processar itens e calcular total
         for (ItemVendaDTO itemDTO : vendaDTO.getItens()) {
             Produto produto = produtoRepositorio.findById(itemDTO.getProdutoId())
                     .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + itemDTO.getProdutoId()));
@@ -114,71 +129,130 @@ public class VendaServico {
                 throw new RuntimeException("Estoque insuficiente para o produto: " + produto.getNome());
             }
 
-            // Cria o ItemVenda
             ItemVenda itemVenda = new ItemVenda();
             itemVenda.setProduto(produto);
             itemVenda.setQuantidade(itemDTO.getQuantidade());
-            itemVenda.setPrecoUnitario(produto.getPreco()); // Preço do produto no momento da venda
-            itemVenda.setVenda(venda); // Liga o item à venda
+            itemVenda.setPrecoUnitario(produto.getPreco());
+            itemVenda.setVenda(venda);
 
             BigDecimal subTotal = produto.getPreco().multiply(new BigDecimal(itemDTO.getQuantidade()));
             itemVenda.setSubTotal(subTotal);
-            
-            itensVenda.add(itemVenda); // Adiciona à lista de itens da venda
+
+            itensVenda.add(itemVenda);
             valorTotalCalculado = valorTotalCalculado.add(subTotal);
 
-            // Atualizar estoque do produto
-            produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - itemDTO.getQuantidade());
-            produtoRepositorio.save(produto); // Salva o produto com estoque atualizado
+            // Registra movimentação de saída no estoque
+            MovimentacaoEstoqueDTO movDto = new MovimentacaoEstoqueDTO();
+            movDto.setProdutoId(produto.getId());
+            movDto.setQuantidade(itemDTO.getQuantidade());
+            movDto.setTipo(MovimentacaoEstoque.TipoMovimentacao.SAIDA);
+            movDto.setUsuarioId(usuario.getId());
+            movimentacaoEstoqueServico.salvar(movDto);
         }
-        
-        venda.setItensVenda(itensVenda); // Seta a lista de itens na venda principal
+
+        venda.setItensVenda(itensVenda);
         venda.setValorTotal(valorTotalCalculado);
 
-        // NOVO: Persistir o valor recebido se a forma de pagamento for Dinheiro
         if ("Dinheiro".equalsIgnoreCase(vendaDTO.getFormaPagamento())) {
             venda.setValorRecebido(vendaDTO.getValorRecebido());
         } else {
-            venda.setValorRecebido(null); // Garante que seja nulo para outras formas de pagamento
+            venda.setValorRecebido(null);
         }
 
         Venda vendaSalva = vendaRepositorio.save(venda);
-        return toDTO(vendaSalva); // Retorna o DTO da venda salva
+        return toDTO(vendaSalva);
     }
 
-    // Método para criar Venda (removido porque 'salvar' já faz isso)
-    // public Venda criarVenda(VendaDTO vendaDTO) { ... }
-
-    // Atualizar uma venda existente (se for permitido e tiver lógica)
     @Transactional
     public Optional<VendaDTO> atualizar(Long id, VendaDTO vendaDTO) {
-        // A atualização de vendas é complexa devido ao estoque.
-        // Se precisar implementar, considere a reversão do estoque antigo
-        // e o ajuste do novo estoque.
-        // Por enquanto, lança UnsupportedOperationException como placeholder.
-        throw new UnsupportedOperationException("Atualização de venda não implementada ou permitida para evitar inconsistências de estoque.");
-        // Exemplo:
-        // return vendaRepositorio.findById(id).map(vendaExistente -> {
-        //    // Lógica de atualização complexa aqui (reverter estoque antigo, aplicar novo estoque, etc.)
-        //    return toDTO(vendaRepositorio.save(vendaExistente));
-        // });
+        // Atualizar venda é complexo por causa do estoque e movimentações
+        // Exemplo: precisamos reverter estoque antigo, deletar movimentações antigas,
+        // salvar novas movimentações e atualizar venda
+        return vendaRepositorio.findById(id).map(vendaExistente -> {
+            // 1. Reverter movimentações antigas (estorno do estoque)
+            for (ItemVenda item : vendaExistente.getItensVenda()) {
+                MovimentacaoEstoqueDTO movEstorno = new MovimentacaoEstoqueDTO();
+                movEstorno.setProdutoId(item.getProduto().getId());
+                movEstorno.setQuantidade(item.getQuantidade());
+                movEstorno.setTipo(MovimentacaoEstoque.TipoMovimentacao.ENTRADA); // Estorno
+                movEstorno.setUsuarioId(vendaExistente.getUsuario().getId());
+                movimentacaoEstoqueServico.salvar(movEstorno);
+            }
+            // 2. Deletar os itens antigos da venda (dependendo do seu modelo, pode ser cascade)
+
+            // 3. Atualizar dados da venda
+            Cliente cliente = clienteRepositorio.findById(vendaDTO.getClienteId())
+                    .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+            Usuario usuario = usuarioRepositorio.findById(vendaDTO.getUsuarioId())
+                    .orElseThrow(() -> new RuntimeException("Usuário (vendedor) não encontrado."));
+
+            vendaExistente.setCliente(cliente);
+            vendaExistente.setUsuario(usuario);
+            vendaExistente.setFormaPagamento(vendaDTO.getFormaPagamento());
+            vendaExistente.setDataVenda(LocalDateTime.now());
+
+            BigDecimal valorTotalCalculado = BigDecimal.ZERO;
+            List<ItemVenda> novosItens = new ArrayList<>();
+
+            for (ItemVendaDTO itemDTO : vendaDTO.getItens()) {
+                Produto produto = produtoRepositorio.findById(itemDTO.getProdutoId())
+                        .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + itemDTO.getProdutoId()));
+
+                if (produto.getQuantidadeEstoque() < itemDTO.getQuantidade()) {
+                    throw new RuntimeException("Estoque insuficiente para o produto: " + produto.getNome());
+                }
+
+                ItemVenda itemVenda = new ItemVenda();
+                itemVenda.setProduto(produto);
+                itemVenda.setQuantidade(itemDTO.getQuantidade());
+                itemVenda.setPrecoUnitario(produto.getPreco());
+                itemVenda.setVenda(vendaExistente);
+
+                BigDecimal subTotal = produto.getPreco().multiply(new BigDecimal(itemDTO.getQuantidade()));
+                itemVenda.setSubTotal(subTotal);
+
+                novosItens.add(itemVenda);
+                valorTotalCalculado = valorTotalCalculado.add(subTotal);
+
+                // Registrar movimentação de saída para o estoque
+                MovimentacaoEstoqueDTO movDto = new MovimentacaoEstoqueDTO();
+                movDto.setProdutoId(produto.getId());
+                movDto.setQuantidade(itemDTO.getQuantidade());
+                movDto.setTipo(MovimentacaoEstoque.TipoMovimentacao.SAIDA);
+                movDto.setUsuarioId(usuario.getId());
+                movimentacaoEstoqueServico.salvar(movDto);
+            }
+
+            vendaExistente.setItensVenda(novosItens);
+            vendaExistente.setValorTotal(valorTotalCalculado);
+
+            if ("Dinheiro".equalsIgnoreCase(vendaDTO.getFormaPagamento())) {
+                vendaExistente.setValorRecebido(vendaDTO.getValorRecebido());
+            } else {
+                vendaExistente.setValorRecebido(null);
+            }
+
+            Venda vendaAtualizada = vendaRepositorio.save(vendaExistente);
+            return toDTO(vendaAtualizada);
+        });
     }
 
-    // Deletar uma venda (e reverter estoque)
     @Transactional
     public boolean deletar(Long id) {
         Optional<Venda> vendaOpt = vendaRepositorio.findById(id);
         if (vendaOpt.isPresent()) {
             Venda venda = vendaOpt.get();
 
-            // Reverter estoque dos produtos
+            // Reverter estoque (entrada dos itens da venda)
             for (ItemVenda item : venda.getItensVenda()) {
-                Produto produto = item.getProduto();
-                if (produto != null) {
-                    produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() + item.getQuantidade());
-                    produtoRepositorio.save(produto);
-                }
+                MovimentacaoEstoqueDTO movEstorno = new MovimentacaoEstoqueDTO();
+                movEstorno.setProdutoId(item.getProduto().getId());
+                movEstorno.setQuantidade(item.getQuantidade());
+                movEstorno.setTipo(MovimentacaoEstoque.TipoMovimentacao.ENTRADA);
+                movEstorno.setUsuarioId(venda.getUsuario().getId());
+                movimentacaoEstoqueServico.salvar(movEstorno);
             }
+
             vendaRepositorio.delete(venda);
             return true;
         }

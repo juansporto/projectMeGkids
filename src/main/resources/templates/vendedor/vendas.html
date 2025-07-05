@@ -1,54 +1,56 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"> <head>
     <meta charset="UTF-8">
-    <title>Registrar e Gerenciar Minhas Vendas - Meg Kids</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Registrar e Gerenciar Minhas Vendas - Meg Kids (Vendedor)</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link rel="stylesheet" href="/css/main-theme-desktop.css">
+    <link rel="stylesheet" href="/css/responsivo.css">
 </head>
 <body>
 
-<aside class="sidebar">
-    <img th:src="@{/imagens/logomeg.jpeg}" alt="Logo Meg Kids" class="sidebar-logo" />
-    <h4>Painel do Vendedor</h4>
+<div class="sidebar">
+    <img th:src="@{/imagens/logomeg.jpeg}" alt="Logo Meg Kids" class="sidebar-logo">
+    <h4>Meg Kids</h4>
     <nav class="sidebar-nav">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a th:href="@{/vendedor/dashboard}" class="nav-link">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                <a class="nav-link" th:href="@{/vendedor/dashboard}">
+                    <i class="fas fa-home"></i> Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a th:href="@{/vendedor/vendas}" class="nav-link active">
-                    <i class="fas fa-file-invoice-dollar"></i> Registrar Nova Venda
+                <a class="nav-link active" th:href="@{/vendedor/vendas}">
+                    <i class="fas fa-cash-register"></i> Vendas
                 </a>
             </li>
             <li class="nav-item">
-                <a th:href="@{/vendedor/produtos}" class="nav-link">
-                    <i class="fas fa-search"></i> Consultar Produtos
+                <a class="nav-link" th:href="@{/vendedor/produtos}">
+                    <i class="fas fa-search"></i> Produtos
                 </a>
             </li>
             <li class="nav-item">
-                <a th:href="@{/vendedor/clientes}" class="nav-link">
-                    <i class="fas fa-address-book"></i> Consultar Clientes
+                <a class="nav-link" th:href="@{/vendedor/clientes}">
+                    <i class="fas fa-users"></i>  Clientes
                 </a>
             </li>
             <li class="nav-item">
-                <a th:href="@{/vendedor/minhas-vendas}" class="nav-link">
+                <a class="nav-link" th:href="@{/vendedor/minhas-vendas}">
                     <i class="fas fa-history"></i> Minhas Vendas
                 </a>
             </li>
             <li class="nav-item mt-auto">
-                <a th:href="@{/auth/logout}" class="nav-link btn-rosa text-center mt-4">
+                <a class="nav-link" th:href="@{/auth/logout}">
                     <i class="fas fa-sign-out-alt"></i> Sair
                 </a>
             </li>
         </ul>
     </nav>
-</aside>
+</div>
 
 <div class="main-content">
     <h1 class="section-title">Registrar e Gerenciar Minhas Vendas</h1>
@@ -66,24 +68,49 @@
                 </div>
                 <div class="col-md-6">
                     <label for="formaPagamento" class="form-label">Forma de Pagamento</label>
-                    <input type="text" class="form-control" id="formaPagamento" required placeholder="Ex: Cartão, Dinheiro, Pix">
+                    <select class="form-select" id="formaPagamento" required onchange="gerenciarPagamentoDinheiro()">
+                        <option value="">Selecione a Forma de Pagamento</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                        <option value="Pix">Pix</option>
+                        <option value="Boleto">Boleto</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="camposDinheiro" class="row mb-3" style="display: none;">
+                <div class="col-md-6">
+                    <label for="valorRecebido" class="form-label">Valor Recebido (Dinheiro)</label>
+                    <input type="number" class="form-control" id="valorRecebido" min="0" step="0.01" oninput="calcularTroco()" placeholder="R$ 0.00">
+                </div>
+                <div class="col-md-6">
+                    <label for="valorTroco" class="form-label">Troco</label>
+                    <input type="text" class="form-control" id="valorTroco" readonly placeholder="R$ 0.00">
                 </div>
             </div>
 
             <h5 class="mt-4 mb-3" style="color: var(--dark-pink);">Adicionar Produtos</h5>
             <div class="row g-3 align-items-end mb-4">
                 <div class="col-md-6">
-                    <label for="produtoParaAdicionar" class="form-label">Produto</label>
-                    <select class="form-select" id="produtoParaAdicionar">
-                        <option value="">Carregando produtos...</option>
-                    </select>
+                    <label for="codigoBarrasProduto" class="form-label">Código de Barras</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="codigoBarrasProduto" placeholder="Digite o código de barras">
+                        <button type="button" class="btn btn-secondary" id="buscarProdutoPorCodigoBtn">Buscar</button>
+                    </div>
                 </div>
                 <div class="col-md-3">
                     <label for="quantidadeProduto" class="form-label">Quantidade</label>
                     <input type="number" class="form-control" id="quantidadeProduto" min="1" value="1">
                 </div>
                 <div class="col-md-3">
-                    <button type="button" class="btn btn-primary w-100" id="adicionarProdutoBtn">Adicionar</button>
+                    <label for="produtoParaAdicionar" class="form-label">Ou Selecione o Produto</label>
+                    <select class="form-select" id="produtoParaAdicionar">
+                        <option value="">Carregando produtos...</option>
+                    </select>
+                </div>
+                <div class="col-md-12 text-end mt-2">
+                    <button type="button" class="btn btn-primary" id="adicionarProdutoBtn">Adicionar Produto</button>
                 </div>
             </div>
 
@@ -176,23 +203,40 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">
-    const API_BASE_URL = /*[[@{/}]]*/ '';
-    const VENDAS_API_URL = API_BASE_URL + 'vendas';
-    const CLIENTES_API_URL = API_BASE_URL + 'api/clientes';
-    const PRODUTOS_API_URL = API_BASE_URL + 'api/produtos';
-    const USUARIOS_API_URL = API_BASE_URL + 'api/usuarios';
+    // Define a base das URLs das APIs diretamente como '/api/'
+    // Isso garante que as requisições AJAX sempre apontem para o endpoint correto,
+    // independentemente do caminho da página atual (/vendedor/vendas, /admin/vendas, etc.).
+    const API_BASE_ROOT = /*[[@{/api}]]*/ '/api';
 
-    const CURRENT_USER_ID = 1; // Lembre-se: Este valor deve ser obtido dinamicamente do usuário logado!
+    const VENDAS_API_URL = API_BASE_ROOT + '/vendas';
+    const CLIENTES_API_URL = API_BASE_ROOT + '/clientes';
+    const PRODUTOS_API_URL = API_BASE_ROOT + '/produtos';
+    const USUARIOS_API_URL = API_BASE_ROOT + '/usuarios';
+
+    // IMPORTANTE: Este valor deve ser obtido dinamicamente do usuário logado no backend!
+    // Ele será passado do seu VendedorControle para o modelo.
+    const CURRENT_USER_ID = /*[[${currentUserId} ?: 0]]*/ 0; 
+    // O '?: 0' é um operador Elvis do Thymeleaf, significa "se currentUserId for nulo, use 0".
 
     let itensNoCarrinho = [];
+    let valorTotalAtual = 0;
 
     document.addEventListener('DOMContentLoaded', () => {
+        // Verificação de segurança: se o ID do usuário não foi carregado, exibe uma mensagem de erro.
+        if (CURRENT_USER_ID === 0) {
+            mostrarMensagemVenda('Erro: ID do vendedor não pôde ser carregado. Por favor, faça login novamente ou verifique a configuração do backend.', 'danger');
+            // Opcional: desabilitar formulário ou redirecionar o usuário
+            // document.getElementById('formVenda').querySelector('button[type="submit"]').disabled = true;
+        }
+
         carregarClientesParaDropdown();
         carregarProdutosParaAdicionar();
         carregarVendas(); // Carrega o histórico de vendas
 
         document.getElementById('adicionarProdutoBtn').addEventListener('click', adicionarProdutoAoCarrinho);
+        document.getElementById('buscarProdutoPorCodigoBtn').addEventListener('click', buscarProdutoPorCodigoBarras);
         document.getElementById('formVenda').addEventListener('submit', finalizarVenda);
+        document.getElementById('valorRecebido').addEventListener('input', calcularTroco);
     });
 
     async function carregarClientesParaDropdown() {
@@ -244,6 +288,61 @@
         }
     }
 
+    async function buscarProdutoPorCodigoBarras() {
+        const codigoBarras = document.getElementById('codigoBarrasProduto').value.trim();
+        if (!codigoBarras) {
+            mostrarMensagemVenda('Por favor, digite um código de barras.', 'warning');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${PRODUTOS_API_URL}/por-codigo/${codigoBarras}`); 
+            if (!response.ok) {
+                if (response.status === 404) {
+                    mostrarMensagemVenda('Produto não encontrado para o código de barras informado.', 'danger');
+                } else {
+                    const errorDetails = await response.text(); // Pega o corpo do erro para mais detalhes
+                    throw new Error(`Erro ${response.status}: ${response.statusText} - Detalhes: ${errorDetails}`);
+                }
+                return;
+            }
+            const produto = await response.json();
+            
+            const selectProdutoElem = document.getElementById('produtoParaAdicionar');
+            const quantidadeInput = document.getElementById('quantidadeProduto');
+
+            let foundOption = false;
+            for (let i = 0; i < selectProdutoElem.options.length; i++) {
+                if (parseInt(selectProdutoElem.options[i].value) === produto.id) {
+                    selectProdutoElem.value = produto.id;
+                    foundOption = true;
+                    break;
+                }
+            }
+
+            if (!foundOption) {
+                // Se o produto não estiver no dropdown (pode acontecer se a lista não é completa ou foi adicionado recentemente)
+                const option = document.createElement('option');
+                option.value = produto.id;
+                option.setAttribute('data-nome', produto.nome);
+                option.setAttribute('data-preco', produto.preco);
+                option.setAttribute('data-estoque', produto.quantidadeEstoque);
+                option.textContent = `${produto.nome} (Estoque: ${produto.quantidadeEstoque}, R$ ${produto.preco.toFixed(2)})`;
+                selectProdutoElem.appendChild(option);
+                selectProdutoElem.value = produto.id;
+            }
+            
+            quantidadeInput.value = 1;
+            document.getElementById('codigoBarrasProduto').value = '';
+            
+            mostrarMensagemVenda(`Produto '${produto.nome}' encontrado e selecionado. Ajuste a quantidade e clique em 'Adicionar Produto'.`, 'info');
+
+        } catch (error) {
+            console.error('Erro ao buscar produto por código de barras:', error);
+            mostrarMensagemVenda(`Erro na comunicação com o servidor ao buscar produto: ${error.message}`, 'danger');
+        }
+    }
+
     function adicionarProdutoAoCarrinho() {
         const selectProdutoElem = document.getElementById('produtoParaAdicionar');
         const quantidadeInput = document.getElementById('quantidadeProduto');
@@ -252,7 +351,7 @@
         const quantidade = parseInt(quantidadeInput.value);
 
         if (!produtoId) {
-            mostrarMensagemVenda('Selecione um produto para adicionar.', 'warning');
+            mostrarMensagemVenda('Selecione um produto ou use o código de barras para adicionar.', 'warning');
             return;
         }
         if (isNaN(quantidade) || quantidade <= 0) {
@@ -328,8 +427,42 @@
 
     function calcularValorTotalVenda() {
         const valorTotalElement = document.getElementById('valorTotalVenda');
-        const total = itensNoCarrinho.reduce((sum, item) => sum + item.subTotal, 0);
-        valorTotalElement.textContent = `R$ ${total.toFixed(2)}`;
+        valorTotalAtual = itensNoCarrinho.reduce((sum, item) => sum + item.subTotal, 0);
+        valorTotalElement.textContent = `R$ ${valorTotalAtual.toFixed(2)}`;
+        calcularTroco();
+    }
+
+    function gerenciarPagamentoDinheiro() {
+        const formaPagamento = document.getElementById('formaPagamento').value;
+        const camposDinheiroDiv = document.getElementById('camposDinheiro');
+        const valorRecebidoInput = document.getElementById('valorRecebido');
+        const valorTrocoInput = document.getElementById('valorTroco');
+
+        if (formaPagamento === 'Dinheiro') {
+            camposDinheiroDiv.style.display = 'flex';
+            valorRecebidoInput.setAttribute('required', 'required');
+            valorRecebidoInput.focus();
+            calcularTroco();
+        } else {
+            camposDinheiroDiv.style.display = 'none';
+            valorRecebidoInput.removeAttribute('required');
+            valorRecebidoInput.value = '';
+            valorTrocoInput.value = '';
+        }
+    }
+
+    function calcularTroco() {
+        const valorRecebido = parseFloat(document.getElementById('valorRecebido').value) || 0;
+        const valorTrocoInput = document.getElementById('valorTroco');
+        
+        const troco = valorRecebido - valorTotalAtual;
+        valorTrocoInput.value = `R$ ${troco.toFixed(2)}`;
+        
+        if (troco < 0) {
+            valorTrocoInput.style.color = 'red';
+        } else {
+            valorTrocoInput.style.color = 'green';
+        }
     }
 
     async function finalizarVenda(event) {
@@ -337,6 +470,7 @@
 
         const clienteId = document.getElementById('clienteId').value;
         const formaPagamento = document.getElementById('formaPagamento').value.trim();
+        const valorRecebido = document.getElementById('valorRecebido').value;
 
         if (!clienteId || !formaPagamento) {
             mostrarMensagemVenda('Preencha o cliente e a forma de pagamento.', 'danger');
@@ -347,13 +481,29 @@
             return;
         }
 
+        if (formaPagamento === 'Dinheiro') {
+            const valRecebidoNum = parseFloat(valorRecebido);
+            if (isNaN(valRecebidoNum) || valRecebidoNum < valorTotalAtual) {
+                mostrarMensagemVenda('Para pagamento em dinheiro, o valor recebido deve ser igual ou maior que o valor total da venda.', 'danger');
+                return;
+            }
+        }
+        
+        // CUIDADO AQUI: Verifique se `CURRENT_USER_ID` é válido antes de enviar
+        if (CURRENT_USER_ID === 0) {
+             mostrarMensagemVenda('Erro interno: ID do vendedor não disponível. Não foi possível finalizar a venda.', 'danger');
+             return;
+        }
+
         const vendaPayload = {
             clienteId: parseInt(clienteId),
-            usuarioId: CURRENT_USER_ID,
+            usuarioId: CURRENT_USER_ID, // Usando o ID do vendedor logado
             formaPagamento: formaPagamento,
+            valorRecebido: formaPagamento === 'Dinheiro' ? parseFloat(valorRecebido) : null,
             itens: itensNoCarrinho.map(item => ({
                 produtoId: item.produtoId,
                 quantidade: item.quantidade
+                // O backend deve calcular precoUnitario e subTotal com base no produtoId
             }))
         };
 
@@ -366,7 +516,10 @@
                 body: JSON.stringify(vendaPayload)
             });
 
-            const resultado = await response.json();
+            // Adicionado log para depuração
+            console.log('Response Status:', response.status);
+            const resultado = await response.json(); // Tenta parsear JSON mesmo em caso de erro para ver detalhes
+            console.log('Response Body:', resultado);
 
             if (response.ok) {
                 mostrarMensagemVenda('Venda registrada com sucesso!', 'success');
@@ -374,46 +527,43 @@
                 itensNoCarrinho = [];
                 renderizarItensDoCarrinho();
                 calcularValorTotalVenda();
+                gerenciarPagamentoDinheiro(); // Reseta a exibição dos campos de dinheiro
                 carregarVendas(); // Recarrega a tabela de histórico de vendas
+                carregarProdutosParaAdicionar(); // Recarrega produtos para atualizar estoque
             } else {
-                mostrarMensagemVenda(`Erro ao registrar venda: ${resultado.message || response.statusText}`, 'danger');
+                // Mensagem de erro mais detalhada
+                mostrarMensagemVenda(`Erro ao registrar venda: ${resultado.message || resultado.error || response.statusText}`, 'danger');
             }
         } catch (error) {
             console.error('Erro de rede ou ao processar requisição de venda:', error);
-            mostrarMensagemVenda('Erro de conexão ou processamento ao finalizar venda.', 'danger');
+            mostrarMensagemVenda('Erro de conexão ou processamento ao finalizar venda. Verifique o console para detalhes.', 'danger');
         }
     }
 
     async function carregarVendas() {
         const tabelaVendasBody = document.getElementById('tabelaVendasBody');
         tabelaVendasBody.innerHTML = '<tr><td colspan="8" class="text-center">Carregando vendas...</td></tr>';
-
         try {
-            // ROTA ORIGINAL: Buscando TODAS as vendas, como estava no segundo HTML.
-            // Se você quiser que o vendedor veja APENAS as vendas dele,
-            // precisará de um endpoint no backend como /vendas/porVendedor/{id}
-            // e alterar a linha abaixo para:
-            // const response = await fetch(`${VENDAS_API_URL}/porVendedor/${CURRENT_USER_ID}`);
-            const response = await fetch(VENDAS_API_URL);
-
+            // Para a página "Registrar Vendas", você pode querer mostrar TODAS as vendas (se o vendedor tiver permissão para ver todas)
+            // OU, para a página "Minhas Vendas", você filtraria aqui pelo CURRENT_USER_ID.
+            // Para replicar o comportamento do gerente (ver todas), manteremos fetch(VENDAS_API_URL).
+            // Se for para "Minhas Vendas", altere para: fetch(`${VENDAS_API_URL}/porVendedor/${CURRENT_USER_ID}`);
+            const response = await fetch(VENDAS_API_URL); 
+            
             if (!response.ok) {
                 throw new Error('Erro ao carregar vendas.');
             }
             const vendas = await response.json();
-
             tabelaVendasBody.innerHTML = '';
             if (vendas.length === 0) {
                 tabelaVendasBody.innerHTML = '<tr><td colspan="8" class="text-center">Nenhuma venda registrada.</td></tr>';
                 return;
             }
-
             for (const venda of vendas) {
                 const row = tabelaVendasBody.insertRow();
                 row.insertCell().textContent = venda.id;
-
                 const clienteNome = await getNomeCliente(venda.clienteId);
                 const usuarioNome = await getNomeUsuario(venda.usuarioId);
-
                 row.insertCell().textContent = clienteNome;
                 row.insertCell().textContent = usuarioNome;
                 row.insertCell().textContent = venda.dataVenda;
@@ -494,6 +644,19 @@
         modal.show();
     }
 
+    async function getNomeProduto(produtoId) {
+        if (!produtoId) return 'N/A';
+        try {
+            const response = await fetch(`${PRODUTOS_API_URL}/${produtoId}`);
+            if (!response.ok) throw new Error('Produto não encontrado.');
+            const produto = await response.json();
+            return produto.nome;
+        } catch (error) {
+            console.warn(`Não foi possível carregar o nome do produto ID ${produtoId}:`, error);
+            return `ID: ${produtoId}`;
+        }
+    }
+
     async function deletarVenda(id) {
         if (!confirm('Tem certeza que deseja excluir esta venda? Esta ação reverterá o estoque.')) {
             return;
@@ -507,6 +670,7 @@
             if (response.ok) {
                 mostrarMensagemVenda('Venda excluída e estoque revertido com sucesso!', 'success');
                 carregarVendas();
+                carregarProdutosParaAdicionar(); // Recarrega produtos para atualizar estoque
             } else {
                 const errorText = await response.text();
                 mostrarMensagemVenda(`Erro ao excluir venda: ${errorText || response.statusText}`, 'danger');
@@ -519,14 +683,25 @@
 
     function mostrarMensagemVenda(texto, tipo) {
         const mensagemDiv = document.getElementById('mensagemVenda');
-        mensagemDiv.innerHTML = `<div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
-                                        ${texto}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>`;
+        // Limpa mensagens anteriores rapidamente
+        mensagemDiv.innerHTML = ''; 
+
+        const alertHtml = `<div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
+                                ${texto}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>`;
+        mensagemDiv.innerHTML = alertHtml;
+        
+        // Tempo para o alerta desaparecer
         setTimeout(() => {
             const alertElement = mensagemDiv.querySelector('.alert');
             if (alertElement) {
-                new bootstrap.Alert(alertElement).close();
+                // Usa a API do Bootstrap para fechar o alerta, garantindo a animação 'fade'
+                const bsAlert = bootstrap.Alert.getInstance(alertElement) || new bootstrap.Alert(alertElement);
+                if (bsAlert) { // Verifica se a instância foi criada ou obtida
+                    bsAlert.dispose(); // Remove o alerta do DOM
+                    mensagemDiv.innerHTML = ''; // Limpa o div container
+                }
             }
         }, 5000);
     }

@@ -1,38 +1,66 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Minhas Vendas - Meg Kids</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Minhas Vendas - Meg Kids (Vendedor)</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="/css/main-theme.css">
 
-
-</head>
+    <link rel="stylesheet" href="/css/main-theme-desktop.css">
+    <link rel="stylesheet" href="/css/responsivo.css"> </head>
 <body>
-<nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/vendedor/dashboard}">
-            <img th:src="@{/images/logomeg.jpeg}" alt="Logo Meg Kids" class="navbar-logo">
-            Painel do Vendedor
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav"
-                aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/auth/logout}">Sair</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div class="sidebar">
+    <img th:src="@{/imagens/logomeg.jpeg}" alt="Logo Meg Kids" class="sidebar-logo">
+    <h4>Meg Kids</h4> <nav class="sidebar-nav">
+        <ul class="nav flex-column">
+           <li class="nav-item">
+                <a class="nav-link" th:href="@{/vendedor/dashboard}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/vendedor/vendas}">
+                    <i class="fas fa-cash-register"></i> Vendas
+                </a>
+            </li>
+              <li class="nav-item">
+                <a class="nav-link" th:href="@{/vendedor/produtos}">
+                    <i class="fas fa-search"></i> Produtos
+                </a>
+            </li>
+             <li class="nav-item">
+                <a class="nav-link " th:href="@{/vendedor/dashboard}">
+                    <i class="fas fa-users"></i> Clientes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" th:href="@{/vendedor/minhas-vendas}">
+                    <i class="fas fa-history"></i> Minhas Vendas
+                </a>
+  
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/perfil}">
+                    <i class="fas fa-user"></i> Meu Perfil
+                </a>  
+            <li class="nav-item mt-auto">
+                <a class="nav-link" th:href="@{/auth/logout}">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
 
-<div class="container mt-4">
-    <h2 class="text-center section-title mb-4">Minhas Vendas</h2>
+<div class="main-content">
+    <h1 class="section-title">Histórico de Minhas Vendas</h1>
+    <p class="lead text-center mb-5" style="color: var(--text-medium);">Visualize todas as vendas que você registrou.</p>
 
-    <table class="table table-striped table-bordered bg-white">
+    <table class="table table-striped table-bordered">
         <thead class="table-dark">
         <tr>
             <th>ID Venda</th>
@@ -61,7 +89,7 @@
                     <p><strong>Data da Venda:</strong> <span id="detalhesData"></span></p>
                     <p><strong>Forma de Pagamento:</strong> <span id="detalhesFormaPgto"></span></p>
                     <p><strong>Valor Total:</strong> <span id="detalhesValorTotal"></span></p>
-                    <h6 class="mt-4">Itens da Venda:</h6>
+                    <h6 class="mt-4" style="color: var(--dark-pink);">Itens da Venda:</h6>
                     <table class="table table-bordered">
                         <thead>
                         <tr>
@@ -81,24 +109,33 @@
             </div>
         </div>
     </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Meg Kids. Todos os direitos reservados.</p>
+    </footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">
-    const API_BASE_URL = /*[[@{/}]]*/ '';
-    const VENDAS_API_URL = API_BASE_URL + 'vendas';
-    const CLIENTES_API_URL = API_BASE_URL + 'api/clientes';
-    const PRODUTOS_API_URL = API_BASE_URL + 'api/produtos';
-    const USUARIOS_API_URL = API_BASE_URL + 'api/usuarios';
+    // Define a base das URLs das APIs diretamente como '/api/'
+    // Isso garante que as requisições AJAX sempre apontem para o endpoint correto.
+    const API_BASE_ROOT = /*[[@{/api}]]*/ '/api';
 
-    // AVISO: A obtenção do ID do usuário logado é CRÍTICA aqui.
-    // Em um sistema real, isso viria do backend após a autenticação,
-    // através de um endpoint que retorna as informações do usuário logado,
-    // ou injetado pelo Thymeleaf se o Spring Security expuser o objeto Authentication.
-    // Por enquanto, usaremos um ID fixo para demonstração.
-    const CURRENT_LOGGED_IN_USER_ID = 1; // SUBSTITUA PELA LÓGICA REAL DE OBTENÇÃO DO ID DO USUÁRIO LOGADO
+    const VENDAS_API_URL = API_BASE_ROOT + '/vendas';
+    const CLIENTES_API_URL = API_BASE_ROOT + '/clientes';
+    const PRODUTOS_API_URL = API_BASE_ROOT + '/produtos';
+    const USUARIOS_API_URL = API_BASE_ROOT + '/usuarios';
+
+    // Obtém o ID do usuário logado que foi passado pelo controlador Spring
+    const CURRENT_LOGGED_IN_USER_ID = /*[[${currentUserId} ?: 0]]*/ 0; 
+    // O '?: 0' é um operador Elvis do Thymeleaf. Se currentUserId for nulo, usa 0.
 
     document.addEventListener('DOMContentLoaded', () => {
+        if (CURRENT_LOGGED_IN_USER_ID === 0) {
+            document.getElementById('minhasVendasBody').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Erro: ID do vendedor não pôde ser carregado. Por favor, faça login novamente.</td></tr>';
+            console.error('CURRENT_LOGGED_IN_USER_ID é 0. O ID do usuário logado não foi passado corretamente para o template.');
+            return;
+        }
         carregarMinhasVendas();
     });
 
@@ -107,18 +144,21 @@
         tabelaBody.innerHTML = '<tr><td colspan="6" class="text-center">Carregando suas vendas...</td></tr>';
 
         try {
-            // Se o seu VendaServico ou VendaControle tiver um método para filtrar por usuário,
-            // você usaria essa rota. Ex: /vendas?usuarioId=X
-            // Se não, você terá que filtrar no frontend (menos eficiente) ou criar um endpoint no backend.
-            const response = await fetch(VENDAS_API_URL); // Traz todas as vendas
+            // RECOMENDADO: Se possível, crie um endpoint no backend que já filtre as vendas por ID do vendedor.
+            // Exemplo de URL de API se você tiver um endpoint no backend:
+            // const response = await fetch(`${VENDAS_API_URL}/porVendedor/${CURRENT_LOGGED_IN_USER_ID}`);
+            
+            // Alternativa (menos eficiente para grandes volumes de dados, mas funcional):
+            // Carrega todas as vendas e filtra no frontend.
+            const response = await fetch(VENDAS_API_URL); 
+
             if (!response.ok) {
-                throw new Error('Erro ao carregar vendas.');
+                throw new Error('Erro ao carregar vendas: ' + response.statusText);
             }
             let vendas = await response.json();
 
-            // Filtrar as vendas pelo usuário logado (apenas no frontend para este exemplo)
+            // Filtra as vendas para mostrar apenas as do usuário logado
             vendas = vendas.filter(venda => venda.usuarioId === CURRENT_LOGGED_IN_USER_ID);
-
 
             tabelaBody.innerHTML = '';
             if (vendas.length === 0) {
@@ -132,7 +172,7 @@
 
                 const clienteNome = await getNomeCliente(venda.clienteId);
                 row.insertCell().textContent = clienteNome;
-                row.insertCell().textContent = venda.dataVenda;
+                row.insertCell().textContent = venda.dataVenda; // Assumindo formato YYYY-MM-DD
                 row.insertCell().textContent = venda.formaPagamento;
                 row.insertCell().textContent = `R$ ${venda.valorTotal.toFixed(2)}`;
 
@@ -145,14 +185,11 @@
             }
         } catch (error) {
             console.error('Erro ao carregar minhas vendas:', error);
-            tabelaBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Erro ao carregar suas vendas.</td></tr>';
+            tabelaBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Erro ao carregar suas vendas. ' + error.message + '</td></tr>';
         }
     }
 
-    // Funções auxiliares (getNomeCliente, getNomeProduto, getNomeUsuario, exibirDetalhesVenda)
-    // Essas funções são REUTILIZADAS do admin/vendas.html.
-    // Para evitar duplicação, você poderia colocá-las em um arquivo JS separado (ex: common-utils.js)
-    // e incluí-lo em ambos os HTMLs.
+    // --- Funções auxiliares (reutilizadas das páginas de vendas) ---
 
     async function getNomeCliente(clienteId) {
         if (!clienteId) return 'N/A';
@@ -196,7 +233,7 @@
     async function exibirDetalhesVenda(venda) {
         document.getElementById('vendaDetalhesId').textContent = venda.id;
         document.getElementById('detalhesCliente').textContent = await getNomeCliente(venda.clienteId);
-        document.getElementById('detalhesVendedor').textContent = await getNomeUsuario(venda.usuarioId); // Pega o nome do vendedor
+        document.getElementById('detalhesVendedor').textContent = await getNomeUsuario(venda.usuarioId);
         document.getElementById('detalhesData').textContent = venda.dataVenda;
         document.getElementById('detalhesFormaPgto').textContent = venda.formaPagamento;
         document.getElementById('detalhesValorTotal').textContent = `R$ ${venda.valorTotal.toFixed(2)}`;
